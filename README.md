@@ -1,4 +1,4 @@
-# Movie Pod
+# Movie Star Personal Data Wallet
 
 A personal movies (and TV series) database and recommender.
 
