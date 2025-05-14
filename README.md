@@ -1,2 +1,2 @@
-# movie_star
+# Movie Pod
 A personal movies database and recommender
