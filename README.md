@@ -22,7 +22,6 @@ As a user I can
   - [ ] name
   - [ ] rating
   - [ ] release date
-  - [ ]
 
 ### Sharing my Movies
 
@@ -43,3 +42,6 @@ As a user I can
   - [ ] Includes a weighting for each user (0-5, default 2)
 - [ ] Add to summarise movies across users
    - [ ] Weighted ratings of movies - user rating * their movie rating
+
+Add support for recommendation engine - review
+https://github.com/recommenders-team/recommenders.
