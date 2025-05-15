@@ -8,17 +8,21 @@ A personal movies (and TV series) database and recommender.
 
 As a user I can
 
-- [ ] Enter movies I have watched
-- [ ] Retrieve movie details from imdb or movielens
-  - [ ] Artwork
-  - [ ] Release date
-  - [ ] Other meta data as available
-- [ ] Have them stored in my POD encrypted
-- [ ] Retrieved from my POD on startup and displayed on my HOME
-- [ ] Associate a review with a movie (text)
-- [ ] Associate a rating with a movie (0-5)
-- [ ] Movies are presented in the GUI using movie art work
-- [ ] Movies can be sorted by
+- [X] Retrieve movie details from imdb or movielens or **themoviedb** 
+  - [X] Artwork
+  - [X] Release date
+  - [X] Description
+  - [X] Rating
+- [X] View all movies in the GUI using movie art work
+- [ ] Settings to store my API key
+- [ ] New lists with names that I choose (e.g., Watched and To Watch)
+- [ ] Have any number of lists
+- [ ] Add movies to my Watched list or my To Watch list
+- [ ] Have the lists stored in my POD encrypted including the meta data
+- [ ] Retrieved the two lists from my POD on startup
+- [ ] Add my own comments to a movie (text)
+- [ ] Add a rating with a movie (0-5?)
+- [ ] My Movie Lists can be sorted by
   - [ ] name
   - [ ] rating
   - [ ] release date
