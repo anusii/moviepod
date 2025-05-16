@@ -1,24 +1,12 @@
 import 'dart:convert';
-import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/movie.dart';
 
 class FavoritesService {
   static const String _favoritesKey = 'favorites';
   final SharedPreferences _prefs;
-  final _favoritesController = StreamController<List<Movie>>.broadcast();
-  List<Movie> _cachedFavorites = [];
 
-  FavoritesService(this._prefs) {
-    _loadFavorites();
-  }
-
-  Stream<List<Movie>> get favoritesStream => _favoritesController.stream;
-
-  Future<void> _loadFavorites() async {
-    _cachedFavorites = await getFavorites();
-    _favoritesController.add(_cachedFavorites);
-  }
+  FavoritesService(this._prefs);
 
   Future<List<Movie>> getFavorites() async {
     final String? favoritesJson = _prefs.getString(_favoritesKey);
@@ -50,11 +38,5 @@ class FavoritesService {
   Future<void> _saveFavorites(List<Movie> favorites) async {
     final encoded = jsonEncode(favorites.map((m) => m.toJson()).toList());
     await _prefs.setString(_favoritesKey, encoded);
-    _cachedFavorites = favorites;
-    _favoritesController.add(favorites);
-  }
-
-  void dispose() {
-    _favoritesController.close();
   }
 }
