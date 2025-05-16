@@ -23,16 +23,33 @@
 ///
 /// Authors: Kevin Wang
 
+/// A class representing a movie with its details.
 class Movie {
+  /// Unique identifier for the movie.
   final int id;
+
+  /// Title of the movie.
   final String title;
+
+  /// Overview or description of the movie.
   final String overview;
+
+  /// URL for the movie's poster image.
   final String posterUrl;
+
+  /// URL for the movie's backdrop image.
   final String backdropUrl;
+
+  /// Average rating of the movie.
   final double voteAverage;
+
+  /// Release date of the movie.
   final DateTime releaseDate;
+
+  /// List of genre IDs associated with the movie.
   final List<int> genreIds;
 
+  /// Creates a new [Movie] instance.
   Movie({
     required this.id,
     required this.title,
@@ -44,6 +61,7 @@ class Movie {
     required this.genreIds,
   });
 
+  /// Creates a [Movie] instance from a JSON map.
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
       id: json['id'],
@@ -58,6 +76,7 @@ class Movie {
     );
   }
 
+  /// Converts the [Movie] instance to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'id': id,

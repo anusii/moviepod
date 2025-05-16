@@ -26,15 +26,18 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
 
+/// A screen that displays and manages downloaded movies.
 class DownloadsScreen extends StatefulWidget {
+  /// Creates a new [DownloadsScreen] widget.
   const DownloadsScreen({super.key});
 
   @override
   State<DownloadsScreen> createState() => _DownloadsScreenState();
 }
 
+/// State class for the downloads screen.
 class _DownloadsScreenState extends State<DownloadsScreen> {
-  // TODO: Implement actual download functionality
+  /// List of downloaded movies.
   final List<Movie> _downloadedMovies = [];
 
   @override

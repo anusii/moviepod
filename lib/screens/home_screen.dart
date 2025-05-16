@@ -31,23 +31,42 @@ import '../services/favorites_service.dart';
 import 'movie_details_screen.dart';
 import 'search_screen.dart';
 
+/// A screen that displays various movie categories and trending content.
 class HomeScreen extends StatefulWidget {
+  /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
+  /// Creates a new [HomeScreen] widget.
   const HomeScreen({super.key, required this.favoritesService});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+/// State class for the home screen.
 class _HomeScreenState extends State<HomeScreen> {
+  /// Service for fetching movie data.
   final MovieService _movieService = MovieService();
+
+  /// Loading state indicator.
   bool _isLoading = true;
+
+  /// Error message if any.
   String? _error;
+
+  /// List of popular movies.
   List<Movie> _popularMovies = [];
+
+  /// List of now playing movies.
   List<Movie> _nowPlayingMovies = [];
+
+  /// List of top rated movies.
   List<Movie> _topRatedMovies = [];
+
+  /// List of upcoming movies.
   List<Movie> _upcomingMovies = [];
+
+  /// Map of scroll controllers for different movie categories.
   final Map<String, ScrollController> _scrollControllers = {};
 
   @override
@@ -68,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  /// Loads all movie categories.
   Future<void> _loadAllMovies() async {
     setState(() {
       _isLoading = true;
@@ -95,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Builds a horizontal scrollable row of movies.
   Widget _buildMovieRow(String title, List<Movie> movies, String key) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

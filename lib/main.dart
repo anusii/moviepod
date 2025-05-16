@@ -32,15 +32,19 @@ import 'screens/profile_screen.dart';
 import 'screens/search_screen.dart';
 import 'services/favorites_service.dart';
 
+/// Initializes the application and sets up shared preferences.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   runApp(MyApp(prefs: prefs));
 }
 
+/// The root widget of the Movie Star application.
 class MyApp extends StatelessWidget {
+  /// Shared preferences instance for storing app data.
   final SharedPreferences prefs;
 
+  /// Creates a new [MyApp] widget.
   const MyApp({super.key, required this.prefs});
 
   @override
@@ -65,18 +69,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// The main screen containing the bottom navigation bar and screen management.
 class MainScreen extends StatefulWidget {
+  /// Shared preferences instance for storing app data.
   final SharedPreferences prefs;
 
+  /// Creates a new [MainScreen] widget.
   const MainScreen({super.key, required this.prefs});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
+/// State class for the main screen.
 class _MainScreenState extends State<MainScreen> {
+  /// Index of the currently selected screen.
   int _selectedIndex = 0;
+
+  /// Service for managing favorite movies.
   late final FavoritesService _favoritesService;
+
+  /// List of screens to display in the bottom navigation bar.
   late final List<Widget> _screens;
 
   @override
@@ -120,7 +133,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
+/// A placeholder home page widget.
 class HomePage extends StatelessWidget {
+  /// Creates a new [HomePage] widget.
   const HomePage({super.key});
 
   @override

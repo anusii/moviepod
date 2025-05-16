@@ -27,19 +27,30 @@ import 'package:flutter/material.dart';
 import '../services/favorites_service.dart';
 import 'my_list_screen.dart';
 
+/// A screen that displays and manages user profile settings.
 class ProfileScreen extends StatefulWidget {
+  /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
+  /// Creates a new [ProfileScreen] widget.
   const ProfileScreen({super.key, required this.favoritesService});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+/// State class for the profile screen.
 class _ProfileScreenState extends State<ProfileScreen> {
+  /// Whether notifications are enabled.
   bool _notificationsEnabled = true;
+
+  /// Whether auto-play is enabled.
   bool _autoPlayEnabled = true;
+
+  /// Selected language for the app.
   String _selectedLanguage = 'English';
+
+  /// Selected video quality.
   String _selectedQuality = 'High';
 
   @override
@@ -138,6 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Builds a section of settings with a title and children widgets.
   Widget _buildSection(String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,6 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Builds a switch tile for boolean settings.
   Widget _buildSwitchTile(
     String title,
     String subtitle,
@@ -174,6 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Builds a dropdown tile for selection settings.
   Widget _buildDropdownTile(
     String title,
     String value,
@@ -198,6 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Builds a list tile for navigation items.
   Widget _buildListTile(
     String title,
     IconData icon,

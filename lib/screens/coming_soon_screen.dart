@@ -30,19 +30,30 @@ import '../services/movie_service.dart';
 import '../services/favorites_service.dart';
 import 'movie_details_screen.dart';
 
+/// A screen that displays upcoming movies and their release dates.
 class ComingSoonScreen extends StatefulWidget {
+  /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
+  /// Creates a new [ComingSoonScreen] widget.
   const ComingSoonScreen({super.key, required this.favoritesService});
 
   @override
   State<ComingSoonScreen> createState() => _ComingSoonScreenState();
 }
 
+/// State class for the coming soon screen.
 class _ComingSoonScreenState extends State<ComingSoonScreen> {
+  /// Service for fetching movie data.
   final MovieService _movieService = MovieService();
+
+  /// Loading state indicator.
   bool _isLoading = false;
+
+  /// Error message if any.
   String? _error;
+
+  /// List of upcoming movies.
   List<Movie> _upcomingMovies = [];
 
   @override
@@ -51,6 +62,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
     _loadUpcomingMovies();
   }
 
+  /// Loads the list of upcoming movies.
   Future<void> _loadUpcomingMovies() async {
     setState(() {
       _isLoading = true;

@@ -27,12 +27,18 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/movie.dart';
 
+/// A service class that manages the user's favorite movies.
 class FavoritesService {
+  /// Key used to store favorites in shared preferences.
   static const String _favoritesKey = 'favorites';
+
+  /// Shared preferences instance for storing favorites.
   final SharedPreferences _prefs;
 
+  /// Creates a new [FavoritesService] instance.
   FavoritesService(this._prefs);
 
+  /// Retrieves the list of favorite movies.
   Future<List<Movie>> getFavorites() async {
     final String? favoritesJson = _prefs.getString(_favoritesKey);
     if (favoritesJson == null) return [];
@@ -41,6 +47,7 @@ class FavoritesService {
     return decoded.map((movie) => Movie.fromJson(movie)).toList();
   }
 
+  /// Adds a movie to the favorites list.
   Future<void> addToFavorites(Movie movie) async {
     final favorites = await getFavorites();
     if (!favorites.any((m) => m.id == movie.id)) {
@@ -49,17 +56,20 @@ class FavoritesService {
     }
   }
 
+  /// Removes a movie from the favorites list.
   Future<void> removeFromFavorites(Movie movie) async {
     final favorites = await getFavorites();
     favorites.removeWhere((m) => m.id == movie.id);
     await _saveFavorites(favorites);
   }
 
+  /// Checks if a movie is in the favorites list.
   Future<bool> isFavorite(Movie movie) async {
     final favorites = await getFavorites();
     return favorites.any((m) => m.id == movie.id);
   }
 
+  /// Saves the list of favorite movies to shared preferences.
   Future<void> _saveFavorites(List<Movie> favorites) async {
     final encoded = jsonEncode(favorites.map((m) => m.toJson()).toList());
     await _prefs.setString(_favoritesKey, encoded);

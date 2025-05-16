@@ -28,10 +28,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/movie.dart';
 import '../services/favorites_service.dart';
 
+/// A screen that displays detailed information about a selected movie.
 class MovieDetailsScreen extends StatefulWidget {
+  /// The movie to display details for.
   final Movie movie;
+
+  /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
+  /// Creates a new [MovieDetailsScreen] widget.
   const MovieDetailsScreen({
     super.key,
     required this.movie,
@@ -42,7 +47,9 @@ class MovieDetailsScreen extends StatefulWidget {
   State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
 }
 
+/// State class for the movie details screen.
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  /// Indicates whether the movie is in the user's favorites.
   bool _isFavorite = false;
 
   @override
@@ -51,6 +58,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     _checkFavoriteStatus();
   }
 
+  /// Checks if the current movie is in the user's favorites.
   Future<void> _checkFavoriteStatus() async {
     final isFavorite = await widget.favoritesService.isFavorite(widget.movie);
     setState(() {
@@ -58,6 +66,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     });
   }
 
+  /// Toggles the favorite status of the current movie.
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
       await widget.favoritesService.removeFromFavorites(widget.movie);
