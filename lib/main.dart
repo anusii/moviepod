@@ -33,6 +33,7 @@ import 'screens/search_screen.dart';
 import 'services/favorites_service.dart';
 
 /// Initializes the application and sets up shared preferences.
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
