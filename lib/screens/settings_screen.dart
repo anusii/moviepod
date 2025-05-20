@@ -26,7 +26,7 @@
 import 'package:flutter/material.dart';
 import '../services/favorites_service.dart';
 import '../services/api_key_service.dart';
-import 'my_list_screen.dart';
+import 'to_watch_screen.dart';
 
 /// A screen that displays and manages user settings.
 class SettingsScreen extends StatefulWidget {
@@ -197,19 +197,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ]),
           _buildSection('Account', [
-            _buildListTile('My List', Icons.favorite, () {
+            _buildListTile('To Watch', Icons.favorite, () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder:
-                      (context) => MyListScreen(
+                      (context) => ToWatchScreen(
                         favoritesService: widget.favoritesService,
                       ),
                 ),
               );
             }),
-            _buildListTile('Watch History', Icons.history, () {
-              // TODO: Navigate to Watch History
+            _buildListTile('Watched', Icons.history, () {
+              // TODO: Navigate to Watched
             }),
             _buildListTile('Help & Support', Icons.help_outline, () {
               // TODO: Navigate to Help & Support
