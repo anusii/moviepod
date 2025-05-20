@@ -1,4 +1,4 @@
-/// Screen for managing the user's list of movies to watch.
+/// Screen for managing the user's list of watched movies.
 ///
 // Time-stamp: <Thursday 2025-04-10 11:47:48 +1000 Graham Williams>
 ///
@@ -29,30 +29,30 @@ import '../models/movie.dart';
 import '../services/favorites_service.dart';
 import 'movie_details_screen.dart';
 
-/// A screen that displays the user's list of movies to watch.
-class ToWatchScreen extends StatefulWidget {
+/// A screen that displays the user's list of watched movies.
+class WatchedScreen extends StatefulWidget {
   /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
-  /// Creates a new [ToWatchScreen] widget.
-  const ToWatchScreen({super.key, required this.favoritesService});
+  /// Creates a new [WatchedScreen] widget.
+  const WatchedScreen({super.key, required this.favoritesService});
 
   @override
-  State<ToWatchScreen> createState() => _ToWatchScreenState();
+  State<WatchedScreen> createState() => _WatchedScreenState();
 }
 
-/// State class for the to watch screen.
-class _ToWatchScreenState extends State<ToWatchScreen> {
+/// State class for the watched screen.
+class _WatchedScreenState extends State<WatchedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('To Watch', style: TextStyle(color: Colors.white)),
+        title: const Text('Watched', style: TextStyle(color: Colors.white)),
       ),
       body: StreamBuilder<List<Movie>>(
-        stream: widget.favoritesService.toWatchMovies,
+        stream: widget.favoritesService.watchedMovies,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -72,7 +72,7 @@ class _ToWatchScreenState extends State<ToWatchScreen> {
           if (movies.isEmpty) {
             return const Center(
               child: Text(
-                'Your watchlist is empty',
+                'Your watched list is empty',
                 style: TextStyle(color: Colors.grey),
               ),
             );
@@ -111,7 +111,7 @@ class _ToWatchScreenState extends State<ToWatchScreen> {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                    widget.favoritesService.removeFromToWatch(movie);
+                    widget.favoritesService.removeFromWatched(movie);
                   },
                 ),
                 onTap: () {

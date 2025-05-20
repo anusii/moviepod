@@ -28,75 +28,123 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/movie.dart';
 
-/// A service class that manages the user's favorite movies.
+/// A service class that manages the user's movie lists.
 class FavoritesService {
-  /// Key used to store favorites in shared preferences.
-  static const String _favoritesKey = 'favorites';
+  /// Key used to store to-watch movies in shared preferences.
+  static const String _toWatchKey = 'to_watch';
 
-  /// Shared preferences instance for storing favorites.
+  /// Key used to store watched movies in shared preferences.
+  static const String _watchedKey = 'watched';
+
+  /// Shared preferences instance for storing movie lists.
   final SharedPreferences _prefs;
 
-  /// Stream controller for favorite movies.
-  final _favoritesController = BehaviorSubject<List<Movie>>();
+  /// Stream controller for to-watch movies.
+  final _toWatchController = BehaviorSubject<List<Movie>>();
 
-  /// Stream of favorite movies.
-  Stream<List<Movie>> get favoriteMovies => _favoritesController.stream;
+  /// Stream controller for watched movies.
+  final _watchedController = BehaviorSubject<List<Movie>>();
+
+  /// Stream of to-watch movies.
+  Stream<List<Movie>> get toWatchMovies => _toWatchController.stream;
+
+  /// Stream of watched movies.
+  Stream<List<Movie>> get watchedMovies => _watchedController.stream;
 
   /// Creates a new [FavoritesService] instance.
   FavoritesService(this._prefs) {
-    _loadFavorites();
+    _loadMovies();
   }
 
-  /// Loads favorites and emits them to the stream.
-  Future<void> _loadFavorites() async {
-    final favorites = await getFavorites();
-    _favoritesController.add(favorites);
+  /// Loads both movie lists and emits them to their respective streams.
+  Future<void> _loadMovies() async {
+    final toWatch = await getToWatch();
+    final watched = await getWatched();
+    _toWatchController.add(toWatch);
+    _watchedController.add(watched);
   }
 
-  /// Retrieves the list of favorite movies.
-  Future<List<Movie>> getFavorites() async {
-    final String? favoritesJson = _prefs.getString(_favoritesKey);
-    if (favoritesJson == null) return [];
+  /// Retrieves the list of to-watch movies.
+  Future<List<Movie>> getToWatch() async {
+    final String? moviesJson = _prefs.getString(_toWatchKey);
+    if (moviesJson == null) return [];
 
-    final List<dynamic> decoded = jsonDecode(favoritesJson);
+    final List<dynamic> decoded = jsonDecode(moviesJson);
     return decoded.map((movie) => Movie.fromJson(movie)).toList();
   }
 
-  /// Adds a movie to the favorites list.
-  Future<void> addToFavorites(Movie movie) async {
-    final favorites = await getFavorites();
-    if (!favorites.any((m) => m.id == movie.id)) {
-      favorites.add(movie);
-      await _saveFavorites(favorites);
-      _favoritesController.add(favorites);
+  /// Retrieves the list of watched movies.
+  Future<List<Movie>> getWatched() async {
+    final String? moviesJson = _prefs.getString(_watchedKey);
+    if (moviesJson == null) return [];
+
+    final List<dynamic> decoded = jsonDecode(moviesJson);
+    return decoded.map((movie) => Movie.fromJson(movie)).toList();
+  }
+
+  /// Adds a movie to the to-watch list.
+  Future<void> addToWatch(Movie movie) async {
+    final toWatch = await getToWatch();
+    if (!toWatch.any((m) => m.id == movie.id)) {
+      toWatch.add(movie);
+      await _saveToWatch(toWatch);
+      _toWatchController.add(toWatch);
     }
   }
 
-  /// Removes a movie from the favorites list.
-  Future<void> removeFromFavorites(Movie movie) async {
-    final favorites = await getFavorites();
-    favorites.removeWhere((m) => m.id == movie.id);
-    await _saveFavorites(favorites);
-    _favoritesController.add(favorites);
+  /// Adds a movie to the watched list.
+  Future<void> addToWatched(Movie movie) async {
+    final watched = await getWatched();
+    if (!watched.any((m) => m.id == movie.id)) {
+      watched.add(movie);
+      await _saveWatched(watched);
+      _watchedController.add(watched);
+    }
   }
 
-  /// Alias for removeFromFavorites for consistency.
-  Future<void> removeFavorite(Movie movie) => removeFromFavorites(movie);
-
-  /// Checks if a movie is in the favorites list.
-  Future<bool> isFavorite(Movie movie) async {
-    final favorites = await getFavorites();
-    return favorites.any((m) => m.id == movie.id);
+  /// Removes a movie from the to-watch list.
+  Future<void> removeFromToWatch(Movie movie) async {
+    final toWatch = await getToWatch();
+    toWatch.removeWhere((m) => m.id == movie.id);
+    await _saveToWatch(toWatch);
+    _toWatchController.add(toWatch);
   }
 
-  /// Saves the list of favorite movies to shared preferences.
-  Future<void> _saveFavorites(List<Movie> favorites) async {
-    final encoded = jsonEncode(favorites.map((m) => m.toJson()).toList());
-    await _prefs.setString(_favoritesKey, encoded);
+  /// Removes a movie from the watched list.
+  Future<void> removeFromWatched(Movie movie) async {
+    final watched = await getWatched();
+    watched.removeWhere((m) => m.id == movie.id);
+    await _saveWatched(watched);
+    _watchedController.add(watched);
   }
 
-  /// Disposes the stream controller.
+  /// Checks if a movie is in the to-watch list.
+  Future<bool> isInToWatch(Movie movie) async {
+    final toWatch = await getToWatch();
+    return toWatch.any((m) => m.id == movie.id);
+  }
+
+  /// Checks if a movie is in the watched list.
+  Future<bool> isInWatched(Movie movie) async {
+    final watched = await getWatched();
+    return watched.any((m) => m.id == movie.id);
+  }
+
+  /// Saves the list of to-watch movies to shared preferences.
+  Future<void> _saveToWatch(List<Movie> movies) async {
+    final encoded = jsonEncode(movies.map((m) => m.toJson()).toList());
+    await _prefs.setString(_toWatchKey, encoded);
+  }
+
+  /// Saves the list of watched movies to shared preferences.
+  Future<void> _saveWatched(List<Movie> movies) async {
+    final encoded = jsonEncode(movies.map((m) => m.toJson()).toList());
+    await _prefs.setString(_watchedKey, encoded);
+  }
+
+  /// Disposes the stream controllers.
   void dispose() {
-    _favoritesController.close();
+    _toWatchController.close();
+    _watchedController.close();
   }
 }
