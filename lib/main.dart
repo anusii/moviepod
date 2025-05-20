@@ -28,8 +28,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/home_screen.dart';
 import 'screens/coming_soon_screen.dart';
 import 'screens/downloads_screen.dart';
-import 'screens/profile_screen.dart';
 import 'screens/search_screen.dart';
+import 'screens/settings_screen.dart';
 import 'services/favorites_service.dart';
 
 /// Initializes the application and sets up shared preferences.
@@ -100,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
       HomeScreen(favoritesService: _favoritesService),
       ComingSoonScreen(favoritesService: _favoritesService),
       const DownloadsScreen(),
-      ProfileScreen(favoritesService: _favoritesService),
+      SettingsScreen(favoritesService: _favoritesService),
     ];
   }
 
@@ -126,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.download),
             label: 'Downloads',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
         ],
       ),
     );
