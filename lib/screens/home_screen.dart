@@ -35,9 +35,14 @@ import 'search_screen.dart';
 class HomeScreen extends StatefulWidget {
   /// Service for managing favorite movies.
   final FavoritesService favoritesService;
+  final MovieService movieService;
 
   /// Creates a new [HomeScreen] widget.
-  const HomeScreen({super.key, required this.favoritesService});
+  const HomeScreen({
+    super.key,
+    required this.favoritesService,
+    required this.movieService,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -45,9 +50,6 @@ class HomeScreen extends StatefulWidget {
 
 /// State class for the home screen.
 class _HomeScreenState extends State<HomeScreen> {
-  /// Service for fetching movie data.
-  final MovieService _movieService = MovieService();
-
   /// Loading state indicator.
   bool _isLoading = true;
 
@@ -95,10 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final popular = await _movieService.getPopularMovies();
-      final nowPlaying = await _movieService.getNowPlayingMovies();
-      final topRated = await _movieService.getTopRatedMovies();
-      final upcoming = await _movieService.getUpcomingMovies();
+      final popular = await widget.movieService.getPopularMovies();
+      final nowPlaying = await widget.movieService.getNowPlayingMovies();
+      final topRated = await widget.movieService.getTopRatedMovies();
+      final upcoming = await widget.movieService.getUpcomingMovies();
 
       setState(() {
         _popularMovies = popular;
@@ -208,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder:
                       (context) => SearchScreen(
                         favoritesService: widget.favoritesService,
+                        movieService: widget.movieService,
                       ),
                 ),
               );

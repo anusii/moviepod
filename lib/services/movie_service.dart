@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/movie.dart';
+import 'api_key_service.dart';
 
 class MovieService {
   static const String _baseUrl = 'https://api.themoviedb.org/3';
-  // TODO: Replace with your actual API key
-  static const String _apiKey = '5bec1661fa965fd845fb82f4973b1bc8';
+  final ApiKeyService _apiKeyService;
+
+  MovieService(this._apiKeyService);
 
   Future<List<Movie>> getPopularMovies() async {
     return _getMovies('movie/popular');
@@ -24,8 +26,13 @@ class MovieService {
   }
 
   Future<List<Movie>> _getMovies(String endpoint) async {
+    final apiKey = _apiKeyService.getApiKey();
+    if (apiKey == null) {
+      throw Exception('API key not configured');
+    }
+
     final response = await http.get(
-      Uri.parse('$_baseUrl/$endpoint?api_key=$_apiKey'),
+      Uri.parse('$_baseUrl/$endpoint?api_key=$apiKey'),
     );
 
     if (response.statusCode == 200) {
@@ -38,8 +45,13 @@ class MovieService {
   }
 
   Future<List<Movie>> searchMovies(String query) async {
+    final apiKey = _apiKeyService.getApiKey();
+    if (apiKey == null) {
+      throw Exception('API key not configured');
+    }
+
     final response = await http.get(
-      Uri.parse('$_baseUrl/search/movie?api_key=$_apiKey&query=$query'),
+      Uri.parse('$_baseUrl/search/movie?api_key=$apiKey&query=$query'),
     );
 
     if (response.statusCode == 200) {
@@ -52,8 +64,13 @@ class MovieService {
   }
 
   Future<Movie> getMovieDetails(int movieId) async {
+    final apiKey = _apiKeyService.getApiKey();
+    if (apiKey == null) {
+      throw Exception('API key not configured');
+    }
+
     final response = await http.get(
-      Uri.parse('$_baseUrl/movie/$movieId?api_key=$_apiKey'),
+      Uri.parse('$_baseUrl/movie/$movieId?api_key=$apiKey'),
     );
 
     if (response.statusCode == 200) {

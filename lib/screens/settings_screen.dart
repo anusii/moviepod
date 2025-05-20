@@ -25,15 +25,21 @@
 
 import 'package:flutter/material.dart';
 import '../services/favorites_service.dart';
+import '../services/api_key_service.dart';
 import 'my_list_screen.dart';
 
 /// A screen that displays and manages user settings.
 class SettingsScreen extends StatefulWidget {
   /// Service for managing favorite movies.
   final FavoritesService favoritesService;
+  final ApiKeyService apiKeyService;
 
   /// Creates a new [SettingsScreen] widget.
-  const SettingsScreen({super.key, required this.favoritesService});
+  const SettingsScreen({
+    super.key,
+    required this.favoritesService,
+    required this.apiKeyService,
+  });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -52,6 +58,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   /// Selected video quality.
   String _selectedQuality = 'High';
+
+  /// Controller for the API key input field.
+  late final TextEditingController _apiKeyController;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiKeyController = TextEditingController(
+      text: widget.apiKeyService.getApiKey(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _apiKeyController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +117,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 20),
           // Settings Sections
+          _buildSection('API Configuration', [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'MovieDB API Key',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _apiKeyController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Enter your MovieDB API key',
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: Colors.grey[900],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await widget.apiKeyService.setApiKey(
+                        _apiKeyController.text,
+                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('API key saved successfully'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Save API Key'),
+                  ),
+                ],
+              ),
+            ),
+          ]),
           _buildSection('Preferences', [
             _buildSwitchTile(
               'Notifications',

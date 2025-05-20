@@ -34,9 +34,14 @@ import 'movie_details_screen.dart';
 class SearchScreen extends StatefulWidget {
   /// Service for managing favorite movies.
   final FavoritesService favoritesService;
+  final MovieService movieService;
 
   /// Creates a new [SearchScreen] widget.
-  const SearchScreen({super.key, required this.favoritesService});
+  const SearchScreen({
+    super.key,
+    required this.favoritesService,
+    required this.movieService,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -46,9 +51,6 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   /// Controller for the search text field.
   final TextEditingController _searchController = TextEditingController();
-
-  /// Service for fetching movie data.
-  final MovieService _movieService = MovieService();
 
   /// Loading state indicator.
   bool _isLoading = false;
@@ -81,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
     });
 
     try {
-      final results = await _movieService.searchMovies(query);
+      final results = await widget.movieService.searchMovies(query);
       setState(() {
         _searchResults = results;
         _isLoading = false;

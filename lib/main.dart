@@ -31,6 +31,8 @@ import 'screens/downloads_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/favorites_service.dart';
+import 'services/api_key_service.dart';
+import 'services/movie_service.dart';
 
 /// Initializes the application and sets up shared preferences.
 void main() async {
@@ -88,6 +90,8 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Service for managing favorite movies.
   late final FavoritesService _favoritesService;
+  late final ApiKeyService _apiKeyService;
+  late final MovieService _movieService;
 
   /// List of screens to display in the bottom navigation bar.
   late final List<Widget> _screens;
@@ -96,11 +100,22 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _favoritesService = FavoritesService(widget.prefs);
+    _apiKeyService = ApiKeyService(widget.prefs);
+    _movieService = MovieService(_apiKeyService);
     _screens = [
-      HomeScreen(favoritesService: _favoritesService),
-      ComingSoonScreen(favoritesService: _favoritesService),
+      HomeScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
+      ComingSoonScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
       const DownloadsScreen(),
-      SettingsScreen(favoritesService: _favoritesService),
+      SettingsScreen(
+        favoritesService: _favoritesService,
+        apiKeyService: _apiKeyService,
+      ),
     ];
   }
 
