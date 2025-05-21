@@ -36,6 +36,12 @@ class FavoritesService {
   /// Key used to store watched movies in shared preferences.
   static const String _watchedKey = 'watched';
 
+  /// Key used to store favorites in shared preferences.
+  static const String _favoritesKey = 'favorites';
+
+  /// Key used to store ratings in shared preferences.
+  static const String _ratingsKey = 'ratings';
+
   /// Shared preferences instance for storing movie lists.
   final SharedPreferences _prefs;
 
@@ -140,6 +146,38 @@ class FavoritesService {
   Future<void> _saveWatched(List<Movie> movies) async {
     final encoded = jsonEncode(movies.map((m) => m.toJson()).toList());
     await _prefs.setString(_watchedKey, encoded);
+  }
+
+  /// Gets the user's personal rating for a movie.
+  Future<double?> getPersonalRating(Movie movie) async {
+    final ratingsJson = _prefs.getString(_ratingsKey);
+    if (ratingsJson == null) return null;
+
+    final Map<String, dynamic> ratings = jsonDecode(ratingsJson);
+    return ratings[movie.id.toString()]?.toDouble();
+  }
+
+  /// Sets the user's personal rating for a movie.
+  Future<void> setPersonalRating(Movie movie, double rating) async {
+    final ratingsJson = _prefs.getString(_ratingsKey);
+    Map<String, dynamic> ratings = {};
+
+    if (ratingsJson != null) {
+      ratings = jsonDecode(ratingsJson);
+    }
+
+    ratings[movie.id.toString()] = rating;
+    await _prefs.setString(_ratingsKey, jsonEncode(ratings));
+  }
+
+  /// Removes the user's personal rating for a movie.
+  Future<void> removePersonalRating(Movie movie) async {
+    final ratingsJson = _prefs.getString(_ratingsKey);
+    if (ratingsJson == null) return;
+
+    final Map<String, dynamic> ratings = jsonDecode(ratingsJson);
+    ratings.remove(movie.id.toString());
+    await _prefs.setString(_ratingsKey, jsonEncode(ratings));
   }
 
   /// Disposes the stream controllers.
