@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/movie.dart';
 import '../services/favorites_service.dart';
+import '../utils/date_format_util.dart';
 
 /// A screen that displays detailed information about a selected movie.
 class MovieDetailsScreen extends StatefulWidget {
@@ -187,7 +188,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${widget.movie.releaseDate.day}/${widget.movie.releaseDate.month}/${widget.movie.releaseDate.year}',
+                        DateFormatUtil.formatShort(widget.movie.releaseDate),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,

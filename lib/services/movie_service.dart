@@ -1,83 +1,48 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../models/movie.dart';
+import '../utils/network_client.dart';
 import 'api_key_service.dart';
 
 class MovieService {
   static const String _baseUrl = 'https://api.themoviedb.org/3';
-  final ApiKeyService _apiKeyService;
+  final NetworkClient _client;
 
-  MovieService(this._apiKeyService);
+  MovieService(ApiKeyService apiKeyService)
+    : _client = NetworkClient(
+        baseUrl: _baseUrl,
+        apiKey: apiKeyService.getApiKey() ?? '',
+      );
 
   Future<List<Movie>> getPopularMovies() async {
-    return _getMovies('movie/popular');
+    final results = await _client.getJsonList('movie/popular');
+    return results.map((movie) => Movie.fromJson(movie)).toList();
   }
 
   Future<List<Movie>> getNowPlayingMovies() async {
-    return _getMovies('movie/now_playing');
+    final results = await _client.getJsonList('movie/now_playing');
+    return results.map((movie) => Movie.fromJson(movie)).toList();
   }
 
   Future<List<Movie>> getTopRatedMovies() async {
-    return _getMovies('movie/top_rated');
+    final results = await _client.getJsonList('movie/top_rated');
+    return results.map((movie) => Movie.fromJson(movie)).toList();
   }
 
   Future<List<Movie>> getUpcomingMovies() async {
-    return _getMovies('movie/upcoming');
-  }
-
-  Future<List<Movie>> _getMovies(String endpoint) async {
-    final apiKey = _apiKeyService.getApiKey();
-    if (apiKey == null) {
-      throw Exception('API key not configured');
-    }
-
-    final response = await http.get(
-      Uri.parse('$_baseUrl/$endpoint?api_key=$apiKey'),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final results = data['results'] as List;
-      return results.map((movie) => Movie.fromJson(movie)).toList();
-    } else {
-      throw Exception('Failed to load movies');
-    }
+    final results = await _client.getJsonList('movie/upcoming');
+    return results.map((movie) => Movie.fromJson(movie)).toList();
   }
 
   Future<List<Movie>> searchMovies(String query) async {
-    final apiKey = _apiKeyService.getApiKey();
-    if (apiKey == null) {
-      throw Exception('API key not configured');
-    }
-
-    final response = await http.get(
-      Uri.parse('$_baseUrl/search/movie?api_key=$apiKey&query=$query'),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final results = data['results'] as List;
-      return results.map((movie) => Movie.fromJson(movie)).toList();
-    } else {
-      throw Exception('Failed to search movies');
-    }
+    final results = await _client.getJsonList('search/movie?query=$query');
+    return results.map((movie) => Movie.fromJson(movie)).toList();
   }
 
   Future<Movie> getMovieDetails(int movieId) async {
-    final apiKey = _apiKeyService.getApiKey();
-    if (apiKey == null) {
-      throw Exception('API key not configured');
-    }
+    final data = await _client.getJson('movie/$movieId');
+    return Movie.fromJson(data);
+  }
 
-    final response = await http.get(
-      Uri.parse('$_baseUrl/movie/$movieId?api_key=$apiKey'),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Movie.fromJson(data);
-    } else {
-      throw Exception('Failed to load movie details');
-    }
+  void dispose() {
+    _client.dispose();
   }
 }
