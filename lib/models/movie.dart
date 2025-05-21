@@ -83,8 +83,12 @@ class Movie {
       'id': id,
       'title': title,
       'overview': overview,
-      'poster_path': TmdbImageUtil.extractPath(posterUrl),
-      'backdrop_path': TmdbImageUtil.extractPath(backdropUrl),
+      'poster_path': TmdbImageUtil.extractPath(
+        posterUrl,
+      ).replaceAll('/p/w500/', ''),
+      'backdrop_path': TmdbImageUtil.extractPath(
+        backdropUrl,
+      ).replaceAll('/original/', ''),
       'vote_average': voteAverage,
       'release_date': releaseDate.toIso8601String(),
       'genre_ids': genreIds,

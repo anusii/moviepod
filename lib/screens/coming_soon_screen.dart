@@ -28,6 +28,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/movie.dart';
 import '../services/movie_service.dart';
 import '../services/favorites_service.dart';
+import '../utils/date_format_util.dart';
 import 'movie_details_screen.dart';
 
 /// A screen that displays upcoming movies and their release dates.
@@ -123,7 +124,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                     subtitle: Text(
-                      'Release Date: ${movie.releaseDate.day}/${movie.releaseDate.month}/${movie.releaseDate.year}',
+                      'Release Date: ${DateFormatUtil.formatNumeric(movie.releaseDate)}',
                       style: const TextStyle(color: Colors.grey),
                     ),
                     onTap: () {
