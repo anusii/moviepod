@@ -24,13 +24,19 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:moviestar/screens/coming_soon_screen.dart';
+import 'package:moviestar/screens/downloads_screen.dart';
+import 'package:moviestar/screens/home_screen.dart';
+import 'package:moviestar/screens/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
+import 'package:moviestar/services/favorites_service.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(child: MyApp(prefs: prefs)));
 }
 
 /// The root widget of the Movie Star application.
@@ -63,13 +69,14 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Builder(builder: (context) => createSolidLogin(context)),
+      home: Builder(builder: (context) => createSolidLogin(context, prefs)),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final SharedPreferences prefs;
+  const MyHomePage({super.key, required this.title, required this.prefs});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -83,11 +90,11 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 /// State class for the main screen.
-class _MainScreenState extends State<MainScreen> {
+class _MyHomePageState extends State<MyHomePage> {
   /// Index of the currently selected screen.
   int _selectedIndex = 0;
 
