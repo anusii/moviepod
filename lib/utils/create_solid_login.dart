@@ -26,6 +26,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:solidpod/solidpod.dart';
@@ -39,33 +40,33 @@ import 'package:moviestar/main.dart';
 ///
 /// Parameters:
 ///   context: BuildContext for widget creation
+///   prefs: SharedPreferences for accessing user preferences
 ///
 /// Returns:
 ///   A Widget configured for Solid authentication.
 
-Widget createSolidLogin(BuildContext context) {
+Widget createSolidLogin(BuildContext context, SharedPreferences prefs) {
   debugPrint('🔍 Setting up Solid login widget');
 
   return Consumer(
     builder: (context, ref, child) {
       final serverUrl = ref.watch(serverURLProvider);
 
-      return _buildNormalLogin(serverUrl);
+      return _buildNormalLogin(serverUrl, prefs);
     },
   );
 }
 
 /// Build the normal login widget.
 
-Widget _buildNormalLogin(String serverUrl) {
+Widget _buildNormalLogin(String serverUrl, SharedPreferences prefs) {
   return Builder(
     builder: (context) {
       // Wrap SolidLogin in a container with custom image.
 
       return Container(
         // TODO: Replace with theme configuration.
-
-        color: Colors.black, 
+        color: Colors.black,
         child: Column(
           children: [
             Expanded(
@@ -73,15 +74,17 @@ Widget _buildNormalLogin(String serverUrl) {
                 required: false,
                 title: 'Movie Star',
                 appDirectory: 'moviestar',
-                webID: serverUrl.isNotEmpty
-                    ? serverUrl
-                    : 'https://pods.dev.solidcommunity.au',
+                webID:
+                    serverUrl.isNotEmpty
+                        ? serverUrl
+                        : 'https://pods.dev.solidcommunity.au',
                 image: const AssetImage('assets/images/app_image.png'),
                 logo: const AssetImage('assets/images/app_icon.png'),
-                link: 'https://github.com/yourusername/moviestar/blob/main/README.md',
-                // TODO: Replace with proper home page.
+                link:
+                    'https://github.com/yourusername/moviestar/blob/main/README.md',
 
-                child: const MyHomePage(title: 'Movie Star Home Page'),
+                // TODO: Replace with proper home page.
+                child: MyHomePage(title: 'Movie Star Home Page', prefs: prefs),
               ),
             ),
           ],

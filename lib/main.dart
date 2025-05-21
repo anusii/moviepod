@@ -1,12 +1,12 @@
 /// Main entry point for the Movie Star application.
-//
-// Time-stamp: <Thursday 2025-05-20 10:52:11 +1000 Graham Williams>
-//
-/// Copyright (C) 2025, Software Innovation Institute, ANU
 ///
-/// Licensed under the GNU General Public License, Version 3 (the "License");
+// Time-stamp: <Thursday 2025-04-10 11:47:48 +1000 Graham Williams>
 ///
-/// License: https://www.gnu.org/licenses/gpl-3.0.en.html
+/// Copyright (C) 2025, Software Innovation Institute, ANU.
+///
+/// Licensed under the GNU General Public License, Version 3 (the "License").
+///
+/// License: https://www.gnu.org/licenses/gpl-3.0.en.html.
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software
@@ -21,24 +21,32 @@
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <https://www.gnu.org/licenses/>.
 ///
-/// Authors: Ashley Tang
-
-library;
+/// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:moviestar/screens/coming_soon_screen.dart';
+import 'package:moviestar/screens/downloads_screen.dart';
+import 'package:moviestar/screens/home_screen.dart';
+import 'package:moviestar/screens/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
+import 'package:moviestar/services/favorites_service.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(child: MyApp(prefs: prefs)));
 }
 
+/// The root widget of the Movie Star application.
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  /// Shared preferences instance for storing app data.
+  final SharedPreferences prefs;
 
-  // This widget is the root of your application.
+  /// Creates a new [MyApp] widget.
+  const MyApp({super.key, required this.prefs});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -61,15 +69,14 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Builder(
-        builder: (context) => createSolidLogin(context),
-      ),
+      home: Builder(builder: (context) => createSolidLogin(context, prefs)),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final SharedPreferences prefs;
+  const MyHomePage({super.key, required this.title, required this.prefs});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -86,70 +93,85 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+/// State class for the main screen.
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  /// Index of the currently selected screen.
+  int _selectedIndex = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  /// Service for managing favorite movies.
+  late final FavoritesService _favoritesService;
+
+  /// List of screens to display in the bottom navigation bar.
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _favoritesService = FavoritesService(widget.prefs);
+    _screens = [
+      HomeScreen(favoritesService: _favoritesService),
+      ComingSoonScreen(favoritesService: _favoritesService),
+      const DownloadsScreen(),
+      ProfileScreen(favoritesService: _favoritesService),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.upcoming),
+            label: 'Coming Soon',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.download),
+            label: 'Downloads',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
       ),
+    );
+  }
+}
+
+/// A placeholder home page widget.
+class HomePage extends StatelessWidget {
+  /// Creates a new [HomePage] widget.
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Movie Star'), centerTitle: true),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
+          children: [
+            const Icon(Icons.movie, size: 100, color: Colors.blue),
+            const SizedBox(height: 20),
             Text(
-              '$_counter',
+              'Welcome to Movie Star',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Your ultimate movie companion',
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
