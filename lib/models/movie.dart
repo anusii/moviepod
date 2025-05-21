@@ -28,30 +28,39 @@ import '../utils/tmdb_image_util.dart';
 /// A class representing a movie with its details.
 class Movie {
   /// Unique identifier for the movie.
+
   final int id;
 
   /// Title of the movie.
+
   final String title;
 
   /// Overview or description of the movie.
+
   final String overview;
 
   /// URL for the movie's poster image.
+
   final String posterUrl;
 
   /// URL for the movie's backdrop image.
+
   final String backdropUrl;
 
   /// Average rating of the movie.
+
   final double voteAverage;
 
   /// Release date of the movie.
+
   final DateTime releaseDate;
 
   /// List of genre IDs associated with the movie.
+
   final List<int> genreIds;
 
   /// Creates a new [Movie] instance.
+
   Movie({
     required this.id,
     required this.title,
@@ -64,6 +73,7 @@ class Movie {
   });
 
   /// Creates a [Movie] instance from a JSON map.
+
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
       id: json['id'],
@@ -78,13 +88,18 @@ class Movie {
   }
 
   /// Converts the [Movie] instance to a JSON map.
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
       'overview': overview,
-      'poster_path': TmdbImageUtil.extractPath(posterUrl),
-      'backdrop_path': TmdbImageUtil.extractPath(backdropUrl),
+      'poster_path': TmdbImageUtil.extractPath(
+        posterUrl,
+      ).replaceAll('/p/w500/', ''),
+      'backdrop_path': TmdbImageUtil.extractPath(
+        backdropUrl,
+      ).replaceAll('/original/', ''),
       'vote_average': voteAverage,
       'release_date': releaseDate.toIso8601String(),
       'genre_ids': genreIds,
