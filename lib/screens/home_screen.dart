@@ -40,7 +40,11 @@ class HomeScreen extends StatefulWidget {
 
   // Creates a new [HomeScreen] widget.
 
-  const HomeScreen({super.key, required this.favoritesService});
+  const HomeScreen({
+    super.key,
+    required this.favoritesService,
+    required this.movieService,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -49,36 +53,25 @@ class HomeScreen extends StatefulWidget {
 // State class for the home screen.
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Service for fetching movie data.
-
-  final MovieService _movieService = MovieService();
-
   // Loading state indicator.
-
   bool _isLoading = true;
 
   // Error message if any.
-
   String? _error;
 
   // List of popular movies.
-
   List<Movie> _popularMovies = [];
 
   // List of now playing movies.
-
   List<Movie> _nowPlayingMovies = [];
 
   // List of top rated movies.
-
   List<Movie> _topRatedMovies = [];
 
   // List of upcoming movies.
-
   List<Movie> _upcomingMovies = [];
 
   // Map of scroll controllers for different movie categories.
-
   final Map<String, ScrollController> _scrollControllers = {};
 
   @override
