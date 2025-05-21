@@ -38,3 +38,4 @@ doc/api/
 
 # Mac
 .DS_Store
+macos/Flutter/GeneratedPluginRegistrant.swift
