@@ -24,6 +24,7 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+import 'package:moviestar/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/coming_soon_screen.dart';
