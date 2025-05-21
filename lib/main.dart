@@ -25,11 +25,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/home_screen.dart';
+
 import 'screens/coming_soon_screen.dart';
 import 'screens/downloads_screen.dart';
+import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
-import 'screens/search_screen.dart';
 import 'services/favorites_service.dart';
 import 'theme/app_theme.dart';
 
