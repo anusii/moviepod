@@ -26,18 +26,22 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
 
-/// A screen that displays and manages downloaded movies.
+// A screen that displays and manages downloaded movies.
+
 class DownloadsScreen extends StatefulWidget {
-  /// Creates a new [DownloadsScreen] widget.
+  // Creates a new [DownloadsScreen] widget.
+
   const DownloadsScreen({super.key});
 
   @override
   State<DownloadsScreen> createState() => _DownloadsScreenState();
 }
 
-/// State class for the downloads screen.
+// State class for the downloads screen.
+
 class _DownloadsScreenState extends State<DownloadsScreen> {
-  /// List of downloaded movies.
+  // List of downloaded movies.
+
   final List<Movie> _downloadedMovies = [];
 
   @override
@@ -67,7 +71,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Implement find movies to download
+                        // TODO: Implement find movies to download.
                       },
                       icon: const Icon(Icons.search),
                       label: const Text('Find Movies to Download'),
@@ -104,7 +108,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        // TODO: Implement delete functionality
+                        // TODO: Implement delete functionality.
                       },
                     ),
                   );

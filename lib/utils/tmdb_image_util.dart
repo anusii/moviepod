@@ -56,21 +56,27 @@ class TmdbImageUtil {
   };
 
   /// Creates a poster URL with the specified size.
-  static String getPosterUrl(String path, {String size = 'w500'}) {
+  static String getPosterUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
-    return '$_baseUrl/${posterSizes[size] ?? posterSizes['w500']!}$path';
+    // Remove any existing size prefixes
+    final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
+    return '$_baseUrl/${posterSizes[size] ?? posterSizes['w185']!}$cleanPath';
   }
 
   /// Creates a backdrop URL with the specified size.
-  static String getBackdropUrl(String path, {String size = 'original'}) {
+  static String getBackdropUrl(String path, {String size = 'w780'}) {
     if (path.isEmpty) return '';
-    return '$_baseUrl/${backdropSizes[size] ?? backdropSizes['original']!}$path';
+    // Remove any existing size prefixes
+    final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
+    return '$_baseUrl/${backdropSizes[size] ?? backdropSizes['w780']!}$cleanPath';
   }
 
   /// Creates a profile picture URL with the specified size.
   static String getProfileUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
-    return '$_baseUrl/${profileSizes[size] ?? profileSizes['w185']!}$path';
+    // Remove any existing size prefixes
+    final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
+    return '$_baseUrl/${profileSizes[size] ?? profileSizes['w185']!}$cleanPath';
   }
 
   /// Extracts the path from a full TMDB image URL.
@@ -79,6 +85,7 @@ class TmdbImageUtil {
     final uri = Uri.parse(url);
     final pathSegments = uri.pathSegments;
     if (pathSegments.length < 2) return '';
-    return '/${pathSegments.sublist(1).join('/')}';
+    // Return only the last segment (the actual file path)
+    return '/${pathSegments.last}';
   }
 }
