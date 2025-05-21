@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+import '../utils/tmdb_image_util.dart';
+
 /// A class representing a movie with its details.
 class Movie {
   /// Unique identifier for the movie.
@@ -67,9 +69,8 @@ class Movie {
       id: json['id'],
       title: json['title'],
       overview: json['overview'],
-      posterUrl: 'https://image.tmdb.org/t/p/w500${json['poster_path']}',
-      backdropUrl:
-          'https://image.tmdb.org/t/p/original${json['backdrop_path']}',
+      posterUrl: TmdbImageUtil.getPosterUrl(json['poster_path'] ?? ''),
+      backdropUrl: TmdbImageUtil.getBackdropUrl(json['backdrop_path'] ?? ''),
       voteAverage: (json['vote_average'] as num).toDouble(),
       releaseDate: DateTime.parse(json['release_date']),
       genreIds: List<int>.from(json['genre_ids'] ?? []),
@@ -82,14 +83,8 @@ class Movie {
       'id': id,
       'title': title,
       'overview': overview,
-      'poster_path': posterUrl.replaceAll(
-        'https://image.tmdb.org/t/p/w500',
-        '',
-      ),
-      'backdrop_path': backdropUrl.replaceAll(
-        'https://image.tmdb.org/t/p/original',
-        '',
-      ),
+      'poster_path': TmdbImageUtil.extractPath(posterUrl),
+      'backdrop_path': TmdbImageUtil.extractPath(backdropUrl),
       'vote_average': voteAverage,
       'release_date': releaseDate.toIso8601String(),
       'genre_ids': genreIds,
