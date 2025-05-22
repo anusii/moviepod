@@ -26,6 +26,7 @@
 library;
 
 import 'package:flutter/material.dart';
+
 import 'package:moviestar/theme/app_theme.dart';
 
 /// A widget that displays a list of directories with their file counts.

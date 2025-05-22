@@ -25,5 +25,6 @@
 
 library;
 
-/// Base path for all health data in the Pod.
+/// Base path for all movie data in the Pod.
+
 const String basePath = 'moviestar/data';

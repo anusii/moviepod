@@ -38,30 +38,39 @@ import 'package:moviestar/theme/app_theme.dart';
 
 class FileBrowserContent extends StatelessWidget {
   /// List of subdirectories in the current directory.
+
   final List<String> directories;
 
   /// List of files in the current directory.
+
   final List<FileItem> files;
 
   /// Map of directory names to their file counts.
+
   final Map<String, int> directoryCounts;
 
   /// The current directory path.
+
   final String currentPath;
 
   /// The currently selected file name.
+
   final String? selectedFile;
 
   /// Function to handle directory selection.
+
   final Function(String) onDirectorySelected;
 
   /// Function to handle file selection.
+
   final Function(String, String) onFileSelected;
 
   /// Function to handle file download.
+
   final Function(String, String) onFileDownload;
 
   /// Function to handle file deletion.
+
   final Function(String, String) onFileDelete;
 
   const FileBrowserContent({
@@ -84,47 +93,48 @@ class FileBrowserContent extends StatelessWidget {
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
       ),
-      child: directories.isEmpty && files.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppTheme.defaultPadding),
-                child: Text(
-                  'No files or folders found in this directory',
-                  style: TextStyle(
-                    color: AppTheme.secondaryTextColor,
-                    fontSize: 14,
+      child:
+          directories.isEmpty && files.isEmpty
+              ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(AppTheme.defaultPadding),
+                  child: Text(
+                    'No files or folders found in this directory',
+                    style: TextStyle(
+                      color: AppTheme.secondaryTextColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
+              )
+              : ListView(
+                padding: const EdgeInsets.all(AppTheme.defaultPadding / 2),
+                children: [
+                  // Directory list
+                  DirectoryList(
+                    directories: directories,
+                    directoryCounts: directoryCounts,
+                    onDirectorySelected: onDirectorySelected,
+                  ),
+
+                  // Add visual separator if both directories and files exist
+                  if (directories.isNotEmpty && files.isNotEmpty)
+                    const Divider(
+                      height: 24,
+                      color: AppTheme.secondaryTextColor,
+                    ),
+
+                  // File list
+                  FileList(
+                    files: files,
+                    currentPath: currentPath,
+                    selectedFile: selectedFile,
+                    onFileSelected: onFileSelected,
+                    onFileDownload: onFileDownload,
+                    onFileDelete: onFileDelete,
+                  ),
+                ],
               ),
-            )
-          : ListView(
-              padding: const EdgeInsets.all(AppTheme.defaultPadding / 2),
-              children: [
-                // Directory list
-                DirectoryList(
-                  directories: directories,
-                  directoryCounts: directoryCounts,
-                  onDirectorySelected: onDirectorySelected,
-                ),
-
-                // Add visual separator if both directories and files exist
-                if (directories.isNotEmpty && files.isNotEmpty)
-                  const Divider(
-                    height: 24,
-                    color: AppTheme.secondaryTextColor,
-                  ),
-
-                // File list
-                FileList(
-                  files: files,
-                  currentPath: currentPath,
-                  selectedFile: selectedFile,
-                  onFileSelected: onFileSelected,
-                  onFileDownload: onFileDownload,
-                  onFileDelete: onFileDelete,
-                ),
-              ],
-            ),
     );
   }
 }

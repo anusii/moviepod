@@ -100,10 +100,13 @@ class FileListItem extends StatelessWidget {
             child: Container(
               // Apply selection highlighting using theme colours.
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppTheme.primaryColor.withAlpha(30)
-                    : Colors.grey[850],
-                borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
+                color:
+                    isSelected
+                        ? AppTheme.primaryColor.withAlpha(30)
+                        : Colors.grey[850],
+                borderRadius: BorderRadius.circular(
+                  AppTheme.defaultBorderRadius,
+                ),
               ),
 
               // Adjust horizontal padding based on available width.
@@ -188,33 +191,39 @@ class FileListItem extends StatelessWidget {
 
                           showDialog(
                             context: context,
-                            builder: (dialogContext) => AlertDialog(
-                              backgroundColor: Colors.grey[900],
-                              title: const Text(
-                                'File Preview',
-                                style: TextStyle(color: AppTheme.primaryTextColor),
-                              ),
-                              content: SizedBox(
-                                width: double.maxFinite,
-                                height: 500,
-                                child: PdfPreview(
-                                  build: (PdfPageFormat format) async => pdfBytes,
-                                  canChangeOrientation: false,
-                                  canChangePageFormat: false,
-                                  allowPrinting: false,
-                                  allowSharing: false,
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(dialogContext),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: AppTheme.primaryColor,
+                            builder:
+                                (dialogContext) => AlertDialog(
+                                  backgroundColor: Colors.grey[900],
+                                  title: const Text(
+                                    'File Preview',
+                                    style: TextStyle(
+                                      color: AppTheme.primaryTextColor,
+                                    ),
                                   ),
-                                  child: const Text('Close'),
+                                  content: SizedBox(
+                                    width: double.maxFinite,
+                                    height: 500,
+                                    child: PdfPreview(
+                                      build:
+                                          (PdfPageFormat format) async =>
+                                              pdfBytes,
+                                      canChangeOrientation: false,
+                                      canChangePageFormat: false,
+                                      allowPrinting: false,
+                                      allowSharing: false,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed:
+                                          () => Navigator.pop(dialogContext),
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: AppTheme.primaryColor,
+                                      ),
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
                           );
                         },
                         style: IconButton.styleFrom(
