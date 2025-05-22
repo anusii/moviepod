@@ -34,6 +34,7 @@ import 'package:path/path.dart' as path;
 import 'package:moviestar/features/file/browser/page.dart';
 import 'package:moviestar/features/file/service/components/file_upload_section.dart';
 import 'package:moviestar/features/file/service/providers/file_service_provider.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
 /// The main file service widget that provides file upload, download, and preview functionality.
 ///
@@ -49,6 +50,9 @@ class FileServiceWidget extends ConsumerStatefulWidget {
 
 class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
   final _browserKey = GlobalKey<FileBrowserState>();
+  String _selectedFileName = '';
+  String _selectedFilePath = '';
+  bool _isFileSelected = false;
 
   /// Navigate to the appropriate folder based on the selected tab.
 
@@ -134,8 +138,23 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                 _browserKey.currentState?.navigateToPath(rootPath);
               }
             },
-            icon: const Icon(Icons.arrow_back),
-            label: const Text('Back to Home Folder'),
+            icon: const Icon(Icons.arrow_back, color: AppTheme.primaryColor),
+            label: const Text(
+              'Back to Home Folder',
+              style: TextStyle(
+                color: AppTheme.primaryTextColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  AppTheme.defaultBorderRadius,
+                ),
+              ),
+            ),
           ),
         ),
 
@@ -151,37 +170,59 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                         Expanded(
                           flex: 2,
                           child: Card(
-                            margin: const EdgeInsets.only(left: 16, right: 8),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.7,
+                            color: Colors.grey[900],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.defaultBorderRadius,
+                              ),
+                            ),
+                            elevation: 4,
+                            margin: const EdgeInsets.only(
+                              right: AppTheme.defaultPadding / 2,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                AppTheme.defaultPadding / 2,
+                              ),
                               child: FileBrowser(
                                 key: _browserKey,
                                 browserKey: _browserKey,
                                 friendlyFolderName: friendlyFolderName,
-                                onFileSelected: (fileName, filePath) {
+                                onFileSelected: (name, filePath) {
+                                  setState(() {
+                                    _selectedFileName = name;
+                                    _selectedFilePath = filePath;
+                                    _isFileSelected = true;
+                                  });
                                   ref.read(fileServiceProvider.notifier)
                                     ..setDownloadFile(filePath)
-                                    ..setFilePreview(fileName)
-                                    ..setRemoteFileName(
-                                      path.basename(fileName),
-                                    );
+                                    ..setFilePreview(name)
+                                    ..setRemoteFileName(path.basename(name));
                                 },
-                                onFileDownload: (fileName, filePath) async {
+                                onFileDownload: (name, filePath) async {
                                   ref.read(fileServiceProvider.notifier)
                                     ..setDownloadFile(filePath)
-                                    ..setRemoteFileName(path.basename(fileName))
+                                    ..setRemoteFileName(path.basename(name))
                                     ..handleDownload(context);
                                 },
-                                onFileDelete: (fileName, filePath) async {
-                                  // Show confirmation dialog before deleting.
-
+                                onFileDelete: (name, filePath) async {
+                                  // Show confirmation dialog before deleting
                                   final bool? confirm = await showDialog<bool>(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: const Text('Confirm Delete'),
+                                        backgroundColor: Colors.grey[900],
+                                        title: const Text(
+                                          'Confirm Delete',
+                                          style: TextStyle(
+                                            color: AppTheme.primaryTextColor,
+                                          ),
+                                        ),
                                         content: Text(
-                                          'Are you sure you want to delete "$fileName"?',
+                                          'Are you sure you want to delete "$name"?',
+                                          style: const TextStyle(
+                                            color: AppTheme.primaryTextColor,
+                                          ),
                                         ),
                                         actions: [
                                           TextButton(
@@ -190,6 +231,10 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                                   context,
                                                 ).pop(false),
                                             child: const Text('Cancel'),
+                                            style: TextButton.styleFrom(
+                                              foregroundColor:
+                                                  AppTheme.primaryTextColor,
+                                            ),
                                           ),
                                           TextButton(
                                             onPressed:
@@ -197,6 +242,10 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                                   context,
                                                 ).pop(true),
                                             child: const Text('Delete'),
+                                            style: TextButton.styleFrom(
+                                              foregroundColor:
+                                                  AppTheme.primaryColor,
+                                            ),
                                           ),
                                         ],
                                       );
@@ -207,14 +256,19 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
 
                                   if (confirm == true) {
                                     ref.read(fileServiceProvider.notifier)
-                                      ..setRemoteFileName(
-                                        path.basename(fileName),
-                                      )
+                                      ..setRemoteFileName(path.basename(name))
                                       ..handleDelete(context);
                                   }
                                 },
-                                onImportCsv: (fileName, filePath) {
-                                  // Handle CSV import if needed.
+                                onImportCsv: (name, filePath) {
+                                  if (mounted) {
+                                    // The provider doesn't have an importCsv method
+                                    // Just refresh the file list instead
+                                    ref
+                                        .read(fileServiceProvider.notifier)
+                                        .updateCurrentPath(filePath);
+                                    _browserKey.currentState?.refreshFiles();
+                                  }
                                 },
                                 onDirectoryChanged: (path) {
                                   if (mounted) {
@@ -232,13 +286,20 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                         Expanded(
                           flex: 1,
                           child: Card(
-                            margin: const EdgeInsets.only(
-                              left: 8,
-                              right: 16,
-                              top: 16,
+                            color: Colors.grey[900],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.defaultBorderRadius,
+                              ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(16),
+                            elevation: 4,
+                            margin: const EdgeInsets.only(
+                              left: AppTheme.defaultPadding / 2,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                AppTheme.defaultPadding,
+                              ),
                               child: FileUploadSection(),
                             ),
                           ),
@@ -250,35 +311,55 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                       children: [
                         // File browser.
                         Card(
-                          margin: const EdgeInsets.all(16),
+                          color: Colors.grey[900],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.defaultBorderRadius,
+                            ),
+                          ),
+                          elevation: 4,
+                          margin: const EdgeInsets.all(AppTheme.defaultPadding),
                           child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.4,
                             child: FileBrowser(
                               key: _browserKey,
                               browserKey: _browserKey,
                               friendlyFolderName: friendlyFolderName,
-                              onFileSelected: (fileName, filePath) {
+                              onFileSelected: (name, filePath) {
+                                setState(() {
+                                  _selectedFileName = name;
+                                  _selectedFilePath = filePath;
+                                  _isFileSelected = true;
+                                });
                                 ref.read(fileServiceProvider.notifier)
                                   ..setDownloadFile(filePath)
-                                  ..setFilePreview(fileName)
-                                  ..setRemoteFileName(path.basename(fileName));
+                                  ..setFilePreview(name)
+                                  ..setRemoteFileName(path.basename(name));
                               },
-                              onFileDownload: (fileName, filePath) async {
+                              onFileDownload: (name, filePath) async {
                                 ref.read(fileServiceProvider.notifier)
                                   ..setDownloadFile(filePath)
-                                  ..setRemoteFileName(path.basename(fileName))
+                                  ..setRemoteFileName(path.basename(name))
                                   ..handleDownload(context);
                               },
-                              onFileDelete: (fileName, filePath) async {
-                                // Show confirmation dialog before deleting.
-
+                              onFileDelete: (name, filePath) async {
+                                // Show confirmation dialog before deleting
                                 final bool? confirm = await showDialog<bool>(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Confirm Delete'),
+                                      backgroundColor: Colors.grey[900],
+                                      title: const Text(
+                                        'Confirm Delete',
+                                        style: TextStyle(
+                                          color: AppTheme.primaryTextColor,
+                                        ),
+                                      ),
                                       content: Text(
-                                        'Are you sure you want to delete "$fileName"?',
+                                        'Are you sure you want to delete "$name"?',
+                                        style: const TextStyle(
+                                          color: AppTheme.primaryTextColor,
+                                        ),
                                       ),
                                       actions: [
                                         TextButton(
@@ -287,6 +368,10 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                                 context,
                                               ).pop(false),
                                           child: const Text('Cancel'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                AppTheme.primaryTextColor,
+                                          ),
                                         ),
                                         TextButton(
                                           onPressed:
@@ -294,6 +379,10 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                                 context,
                                               ).pop(true),
                                           child: const Text('Delete'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                AppTheme.primaryColor,
+                                          ),
                                         ),
                                       ],
                                     );
@@ -304,12 +393,19 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
 
                                 if (confirm == true) {
                                   ref.read(fileServiceProvider.notifier)
-                                    ..setRemoteFileName(path.basename(fileName))
+                                    ..setRemoteFileName(path.basename(name))
                                     ..handleDelete(context);
                                 }
                               },
-                              onImportCsv: (fileName, filePath) {
-                                // Handle CSV import if needed.
+                              onImportCsv: (name, filePath) {
+                                if (mounted) {
+                                  // The provider doesn't have an importCsv method
+                                  // Just refresh the file list instead
+                                  ref
+                                      .read(fileServiceProvider.notifier)
+                                      .updateCurrentPath(filePath);
+                                  _browserKey.currentState?.refreshFiles();
+                                }
                               },
                               onDirectoryChanged: (path) {
                                 if (mounted) {
@@ -324,9 +420,18 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
 
                         // Upload section.
                         Card(
-                          margin: const EdgeInsets.all(16),
-                          child: const Padding(
-                            padding: EdgeInsets.all(16),
+                          color: Colors.grey[900],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.defaultBorderRadius,
+                            ),
+                          ),
+                          elevation: 4,
+                          margin: const EdgeInsets.all(AppTheme.defaultPadding),
+                          child: Padding(
+                            padding: const EdgeInsets.all(
+                              AppTheme.defaultPadding,
+                            ),
                             child: FileUploadSection(),
                           ),
                         ),

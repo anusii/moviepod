@@ -37,6 +37,7 @@ import 'package:path/path.dart' as path;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'package:moviestar/features/file/service/providers/file_service_provider.dart';
+import 'package:moviestar/theme/app_theme.dart';
 import 'package:moviestar/utils/is_text_file.dart';
 
 /// A widget that handles file upload functionality and preview.
@@ -92,10 +93,11 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
 
     return Card(
       elevation: 2,
+      color: Colors.grey[850],
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
         side: BorderSide(
-          color: Theme.of(context).dividerColor.withAlpha(10),
+          color: AppTheme.primaryColor.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -105,35 +107,32 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
+              color: AppTheme.primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(AppTheme.defaultBorderRadius),
               ),
             ),
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.preview,
                   size: 20,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: AppTheme.primaryColor,
                 ),
                 const SizedBox(width: 8),
-                Text(
+                const Text(
                   'Preview',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: AppTheme.primaryTextColor,
                   ),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: MarkdownTooltip(
-                    message: '''
-
-                    **Close Preview:** Tap here to close the file preview panel.
-
-                    ''',
-                    child: const Icon(Icons.close, size: 20),
+                  icon: const Icon(
+                    Icons.close,
+                    size: 20,
+                    color: AppTheme.primaryColor,
                   ),
                   onPressed: () => setState(() => showPreview = false),
                   padding: EdgeInsets.zero,
@@ -148,7 +147,10 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
             child: SingleChildScrollView(
               child: Text(
                 filePreview!,
-                style: const TextStyle(fontFamily: 'monospace'),
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  color: AppTheme.primaryTextColor,
+                ),
               ),
             ),
           ),
@@ -563,7 +565,11 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
         // Title.
         const Text(
           'Upload Files',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primaryTextColor,
+          ),
         ),
         const SizedBox(height: 16),
 
@@ -571,41 +577,42 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
         _buildPreviewCard(),
         if (showPreview) const SizedBox(height: 16),
 
-        // Show selected file info.
-        if (state.uploadFile != null)
+        // Selected file indicator (the one showing in the upload area)
+        if (state.remoteFileName != null &&
+            state.remoteFileName != 'remoteFileName')
           Container(
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(8),
-              borderRadius: BorderRadius.circular(12),
+              color: AppTheme.primaryColor.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                color: AppTheme.primaryColor.withOpacity(0.3),
+                width: 1,
               ),
             ),
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.file_present,
                   size: 20,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppTheme.primaryColor,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    path.basename(state.uploadFile!),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                    state.cleanFileName ?? '',
+                    style: const TextStyle(
+                      color: AppTheme.primaryTextColor,
                       fontWeight: FontWeight.w500,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (state.uploadDone)
-                  const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                const Icon(Icons.check_circle, color: Colors.green, size: 18),
               ],
             ),
           ),
-        if (state.uploadFile != null) const SizedBox(height: 16),
 
         // Upload and CSV buttons row.
         Row(
@@ -645,19 +652,22 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                               }
                             }
                           },
-                  icon: Icon(
-                    Icons.file_upload,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  icon: const Icon(Icons.file_upload, color: Colors.white),
+                  label: const Text(
+                    'Upload',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  label: const Text('Upload'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                    foregroundColor:
-                        Theme.of(context).colorScheme.onPrimaryContainer,
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(
+                        AppTheme.defaultBorderRadius,
+                      ),
                     ),
                   ),
                 ),
@@ -697,13 +707,22 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                         }
                       }
                     },
-            icon: const Icon(Icons.analytics),
-            label: const Text('Visualize JSON'),
+            icon: const Icon(Icons.analytics, color: AppTheme.primaryColor),
+            label: const Text(
+              'Visualize JSON',
+              style: TextStyle(
+                color: AppTheme.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(
+                  AppTheme.defaultBorderRadius,
+                ),
               ),
+              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
             ),
           ),
         ),
@@ -722,13 +741,22 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                   state.uploadInProgress
                       ? null
                       : () => handlePreview(state.uploadFile!),
-              icon: const Icon(Icons.preview),
-              label: const Text('Preview File'),
+              icon: const Icon(Icons.preview, color: AppTheme.primaryColor),
+              label: const Text(
+                'Preview File',
+                style: TextStyle(
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.defaultBorderRadius,
+                  ),
                 ),
+                backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
               ),
             ),
           ),

@@ -26,6 +26,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
 /// A widget that displays when a directory is empty.
 ///
@@ -46,20 +47,18 @@ class EmptyDirectoryView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Display a large folder icon with reduced opacity.
-          Icon(
+          const Icon(
             Icons.folder_open,
             size: 48,
-            color: Theme.of(context).colorScheme.primary.withAlpha(50),
+            color: Color.fromRGBO(255, 0, 0, 0.5), // Red with 50% opacity
           ),
 
           const SizedBox(height: 16),
 
           // Display empty state message.
-          Text(
+          const Text(
             'This folder is empty',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(color: AppTheme.secondaryTextColor, fontSize: 16),
           ),
         ],
       ),

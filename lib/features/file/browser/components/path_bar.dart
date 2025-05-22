@@ -27,7 +27,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_tooltip/markdown_tooltip.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
 /// A path bar widget that displays the current directory path and provides
 /// navigation controls.
@@ -83,107 +83,81 @@ class PathBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withAlpha(50),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).dividerColor.withAlpha(10)),
+    return Card(
+      color: Colors.grey[900],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Display friendly folder name first.
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              friendlyFolderName,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Row(
-            children: [
-              // Show back button if we're not at the root directory.
-              if (pathHistory.length > 1)
-                IconButton(
-                  icon: MarkdownTooltip(
-                    message: '''
-                    
-                    **Navigate Up:** Tap here to go back to the parent directory.
-                    
-                    ''',
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  onPressed: onNavigateUp,
-                  style: IconButton.styleFrom(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primary.withAlpha(10),
-                    padding: const EdgeInsets.all(8),
-                  ),
-                ),
-
-              const SizedBox(width: 8),
-
-              // Display current path with ellipsis if too long.
-              Expanded(
-                child: Text(
-                  currentPath,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-
-              const Spacer(),
-
-              // Refresh button to update the current directory.
+      elevation: 2,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.defaultPadding,
+          vertical: AppTheme.defaultPadding / 2,
+        ),
+        child: Row(
+          children: [
+            // Back button (only shown if there's history)
+            if (pathHistory.length > 1)
               IconButton(
-                icon: MarkdownTooltip(
-                  message: '''
-                  
-                  **Refresh:** Tap here to reload the current directory contents.
-                  
-                  ''',
-                  child: Icon(
-                    Icons.refresh,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: AppTheme.primaryTextColor,
                 ),
-                onPressed: onRefresh,
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primary.withAlpha(10),
-                  padding: const EdgeInsets.all(8),
-                ),
+                tooltip: 'Back to $friendlyFolderName',
+                onPressed: onNavigateUp,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
               ),
-            ],
-          ),
+            if (pathHistory.length > 1) const SizedBox(width: 12),
 
-          // Show file count when not loading.
-          if (!isLoading) ...[
-            const SizedBox(height: 8),
+            // Path text display
+            Expanded(
+              child: Text(
+                friendlyFolderName,
+                style: const TextStyle(
+                  color: AppTheme.primaryTextColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // File count
             Text(
               'Files in current directory: $currentDirFileCount',
-              style: TextStyle(
+              style: const TextStyle(
+                color: AppTheme.secondaryTextColor,
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
+            const SizedBox(width: 12),
+
+            // Refresh button
+            IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppTheme.primaryColor,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.refresh,
+                        color: AppTheme.primaryTextColor,
+                      ),
+              ),
+              tooltip: 'Refresh',
+              onPressed: isLoading ? null : onRefresh,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
           ],
-        ],
+        ),
       ),
     );
   }
