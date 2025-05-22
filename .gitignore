@@ -38,3 +38,56 @@ doc/api/
 
 # Mac
 .DS_Store
+
+# macOS specific files
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+*.xcworkspace
+xcuserdata/
+Pods/
+DerivedData/
+.build/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.tmp
+*.bak
+*.log
+
+# VS Code related
+.vscode/
+.history/
+
+# Coverage
+coverage/
+.coverage/
+*.lcov
