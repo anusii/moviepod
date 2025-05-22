@@ -30,52 +30,38 @@ import 'package:flutter/material.dart';
 import 'package:moviestar/features/file/browser/components/directory_list.dart';
 import 'package:moviestar/features/file/browser/components/file_list.dart';
 import 'package:moviestar/features/file/browser/models/file_item.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
-/// A widget that displays the main content of the file browser.
+/// Content widget for the file browser.
 ///
-/// The content includes:
-/// - List of directories with their file counts.
-/// - List of files with their metadata and actions.
-/// - Visual separation between directories and files.
-///
-/// The widget coordinates the display of directories and files,
-/// handling the layout and visual hierarchy of the browser content.
+/// Displays a list of directories and files in the current directory.
 
 class FileBrowserContent extends StatelessWidget {
-  /// List of directory names to display.
-
+  /// List of subdirectories in the current directory.
   final List<String> directories;
 
-  /// List of files to display.
-
+  /// List of files in the current directory.
   final List<FileItem> files;
 
   /// Map of directory names to their file counts.
-
   final Map<String, int> directoryCounts;
 
   /// The current directory path.
-
   final String currentPath;
 
   /// The currently selected file name.
-
   final String? selectedFile;
 
-  /// Callback when a directory is selected.
-
+  /// Function to handle directory selection.
   final Function(String) onDirectorySelected;
 
-  /// Callback when a file is selected.
-
+  /// Function to handle file selection.
   final Function(String, String) onFileSelected;
 
-  /// Callback when a file is downloaded.
-
+  /// Function to handle file download.
   final Function(String, String) onFileDownload;
 
-  /// Callback when a file is deleted.
-
+  /// Function to handle file deletion.
   final Function(String, String) onFileDelete;
 
   const FileBrowserContent({
@@ -93,34 +79,52 @@ class FileBrowserContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        // Display directory list at the top.
-        DirectoryList(
-          directories: directories,
-          directoryCounts: directoryCounts,
-          onDirectorySelected: onDirectorySelected,
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
+      ),
+      child: directories.isEmpty && files.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.defaultPadding),
+                child: Text(
+                  'No files or folders found in this directory',
+                  style: TextStyle(
+                    color: AppTheme.secondaryTextColor,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
+          : ListView(
+              padding: const EdgeInsets.all(AppTheme.defaultPadding / 2),
+              children: [
+                // Directory list
+                DirectoryList(
+                  directories: directories,
+                  directoryCounts: directoryCounts,
+                  onDirectorySelected: onDirectorySelected,
+                ),
 
-        // Add visual separator if both directories and files exist.
-        if (directories.isNotEmpty && files.isNotEmpty)
-          Divider(
-            height: 24,
-            indent: 16,
-            endIndent: 16,
-            color: Theme.of(context).dividerColor.withAlpha(20),
-          ),
+                // Add visual separator if both directories and files exist
+                if (directories.isNotEmpty && files.isNotEmpty)
+                  const Divider(
+                    height: 24,
+                    color: AppTheme.secondaryTextColor,
+                  ),
 
-        // Display file list below directories.
-        FileList(
-          files: files,
-          currentPath: currentPath,
-          selectedFile: selectedFile,
-          onFileSelected: onFileSelected,
-          onFileDownload: onFileDownload,
-          onFileDelete: onFileDelete,
-        ),
-      ],
+                // File list
+                FileList(
+                  files: files,
+                  currentPath: currentPath,
+                  selectedFile: selectedFile,
+                  onFileSelected: onFileSelected,
+                  onFileDownload: onFileDownload,
+                  onFileDelete: onFileDelete,
+                ),
+              ],
+            ),
     );
   }
 }

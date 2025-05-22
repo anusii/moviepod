@@ -26,6 +26,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
 /// A widget that displays a list of directories with their file counts.
 ///
@@ -67,14 +68,14 @@ class DirectoryList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section header for directories.
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             'Folders',
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primaryTextColor,
             ),
           ),
         ),
@@ -82,17 +83,17 @@ class DirectoryList extends StatelessWidget {
         // List of directory items.
         ...directories.map(
           (dir) => ListTile(
-            leading: Icon(
-              Icons.folder,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            leading: const Icon(Icons.folder, color: AppTheme.primaryColor),
             title: Row(
               children: [
                 // Directory name with overflow protection.
                 Expanded(
                   child: Text(
                     dir,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.primaryTextColor,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -104,14 +105,14 @@ class DirectoryList extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(10),
+                    color: AppTheme.primaryColor.withAlpha(30),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${directoryCounts[dir] ?? 0} files',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AppTheme.primaryTextColor,
                     ),
                   ),
                 ),
@@ -119,9 +120,11 @@ class DirectoryList extends StatelessWidget {
             ),
             dense: true,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
             ),
             onTap: () => onDirectorySelected(dir),
+            tileColor: Colors.grey[850],
+            selectedTileColor: AppTheme.primaryColor.withAlpha(30),
           ),
         ),
       ],

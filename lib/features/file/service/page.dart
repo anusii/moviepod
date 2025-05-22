@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:moviestar/features/file/service/components/file_service_widget.dart';
+import 'package:moviestar/theme/app_theme.dart';
 
 /// The file service page that provides file management functionality.
 ///
@@ -42,12 +43,20 @@ class FileService extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('File Management'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: const Text(
+          'File Management',
+          style: TextStyle(
+            color: AppTheme.primaryTextColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: AppTheme.backgroundColor,
+        iconTheme: const IconThemeData(color: AppTheme.primaryTextColor),
       ),
       body: const Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(AppTheme.defaultPadding),
         child: FileServiceWidget(),
       ),
     );
