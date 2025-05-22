@@ -25,6 +25,7 @@
 
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rxdart/rxdart.dart';
 import '../models/movie.dart';
 
 /// A service class that manages the user's favorite movies.
@@ -38,9 +39,22 @@ class FavoritesService {
 
   final SharedPreferences _prefs;
 
-  /// Creates a new [FavoritesService] instance.
+  /// Stream controller for favorite movies.
+  final _favoritesController = BehaviorSubject<List<Movie>>();
 
-  FavoritesService(this._prefs);
+  /// Stream of favorite movies.
+  Stream<List<Movie>> get favoriteMovies => _favoritesController.stream;
+
+  /// Creates a new [FavoritesService] instance.
+  FavoritesService(this._prefs) {
+    _loadFavorites();
+  }
+
+  /// Loads favorites and emits them to the stream.
+  Future<void> _loadFavorites() async {
+    final favorites = await getFavorites();
+    _favoritesController.add(favorites);
+  }
 
   /// Retrieves the list of favorite movies.
 
@@ -59,6 +73,7 @@ class FavoritesService {
     if (!favorites.any((m) => m.id == movie.id)) {
       favorites.add(movie);
       await _saveFavorites(favorites);
+      _favoritesController.add(favorites);
     }
   }
 
@@ -68,7 +83,11 @@ class FavoritesService {
     final favorites = await getFavorites();
     favorites.removeWhere((m) => m.id == movie.id);
     await _saveFavorites(favorites);
+    _favoritesController.add(favorites);
   }
+
+  /// Alias for removeFromFavorites for consistency.
+  Future<void> removeFavorite(Movie movie) => removeFromFavorites(movie);
 
   /// Checks if a movie is in the favorites list.
 
@@ -82,5 +101,10 @@ class FavoritesService {
   Future<void> _saveFavorites(List<Movie> favorites) async {
     final encoded = jsonEncode(favorites.map((m) => m.toJson()).toList());
     await _prefs.setString(_favoritesKey, encoded);
+  }
+
+  /// Disposes the stream controller.
+  void dispose() {
+    _favoritesController.close();
   }
 }
