@@ -32,16 +32,20 @@ import 'package:flutter/material.dart';
 
 import 'package:moviestar/utils/is_text_file.dart';
 
-/// Check if a string looks like base64
+/// Check if a string looks like base64.
+
 bool _isLikelyBase64(String str) {
-  // Base64 strings should only contain these characters
+  // Base64 strings should only contain these characters.
+
   final RegExp base64Pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
 
-  // Must be at least 4 characters and length must be a multiple of 4
+  // Must be at least 4 characters and length must be a multiple of 4.
+
   return str.length >= 4 && str.length % 4 == 0 && base64Pattern.hasMatch(str);
 }
 
-/// Check if a string looks like JSON
+/// Check if a string looks like JSON.
+
 bool _isLikelyJson(String str) {
   final trimmed = str.trim();
   return (trimmed.startsWith('{') && trimmed.endsWith('}')) ||
@@ -59,12 +63,15 @@ Future<void> saveDecryptedContent(
   final file = File(saveFilePath);
 
   // Ensure the parent directory exists.
+
   await file.parent.create(recursive: true);
 
   try {
-    // First, try to detect content type
+    // First, try to detect content type.
+
     if (_isLikelyJson(decryptedContent)) {
-      // Try to parse and save as formatted JSON
+      // Try to parse and save as formatted JSON.
+
       try {
         final jsonData = jsonDecode(decryptedContent);
         await file.writeAsString(
@@ -77,7 +84,8 @@ Future<void> saveDecryptedContent(
       }
     }
 
-    // For non-text files, try base64 decoding if it looks like base64
+    // For non-text files, try base64 decoding if it looks like base64.
+
     if (!isTextFile(saveFilePath) && _isLikelyBase64(decryptedContent)) {
       try {
         final bytes = base64Decode(decryptedContent);
@@ -91,7 +99,8 @@ Future<void> saveDecryptedContent(
       }
     }
 
-    // Default: treat as plain text
+    // Default: treat as plain text.
+
     await file.writeAsString(decryptedContent);
   } catch (e) {
     throw Exception('Failed to save file: ${e.toString()}');

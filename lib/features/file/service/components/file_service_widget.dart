@@ -50,9 +50,6 @@ class FileServiceWidget extends ConsumerStatefulWidget {
 
 class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
   final _browserKey = GlobalKey<FileBrowserState>();
-  String _selectedFileName = '';
-  String _selectedFilePath = '';
-  bool _isFileSelected = false;
 
   /// Navigate to the appropriate folder based on the selected tab.
 
@@ -147,7 +144,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
               ),
             ),
             style: TextButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+              backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -189,11 +186,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                 browserKey: _browserKey,
                                 friendlyFolderName: friendlyFolderName,
                                 onFileSelected: (name, filePath) {
-                                  setState(() {
-                                    _selectedFileName = name;
-                                    _selectedFilePath = filePath;
-                                    _isFileSelected = true;
-                                  });
+                                  setState(() {});
                                   ref.read(fileServiceProvider.notifier)
                                     ..setDownloadFile(filePath)
                                     ..setFilePreview(name)
@@ -230,22 +223,22 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                                 () => Navigator.of(
                                                   context,
                                                 ).pop(false),
-                                            child: const Text('Cancel'),
                                             style: TextButton.styleFrom(
                                               foregroundColor:
                                                   AppTheme.primaryTextColor,
                                             ),
+                                            child: const Text('Cancel'),
                                           ),
                                           TextButton(
                                             onPressed:
                                                 () => Navigator.of(
                                                   context,
                                                 ).pop(true),
-                                            child: const Text('Delete'),
                                             style: TextButton.styleFrom(
                                               foregroundColor:
                                                   AppTheme.primaryColor,
                                             ),
+                                            child: const Text('Delete'),
                                           ),
                                         ],
                                       );
@@ -326,11 +319,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                               browserKey: _browserKey,
                               friendlyFolderName: friendlyFolderName,
                               onFileSelected: (name, filePath) {
-                                setState(() {
-                                  _selectedFileName = name;
-                                  _selectedFilePath = filePath;
-                                  _isFileSelected = true;
-                                });
+                                setState(() {});
                                 ref.read(fileServiceProvider.notifier)
                                   ..setDownloadFile(filePath)
                                   ..setFilePreview(name)
@@ -367,22 +356,22 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                               () => Navigator.of(
                                                 context,
                                               ).pop(false),
-                                          child: const Text('Cancel'),
                                           style: TextButton.styleFrom(
                                             foregroundColor:
                                                 AppTheme.primaryTextColor,
                                           ),
+                                          child: const Text('Cancel'),
                                         ),
                                         TextButton(
                                           onPressed:
                                               () => Navigator.of(
                                                 context,
                                               ).pop(true),
-                                          child: const Text('Delete'),
                                           style: TextButton.styleFrom(
                                             foregroundColor:
                                                 AppTheme.primaryColor,
                                           ),
+                                          child: const Text('Delete'),
                                         ),
                                       ],
                                     );

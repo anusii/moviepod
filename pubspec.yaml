@@ -48,6 +48,7 @@ dependencies:
   markdown_tooltip: ^0.0.7
   file_picker: ^10.1.9
   syncfusion_flutter_pdf: ^29.2.5
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:

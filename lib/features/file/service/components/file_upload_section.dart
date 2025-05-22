@@ -25,7 +25,6 @@
 
 library;
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -34,7 +33,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:path/path.dart' as path;
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'package:moviestar/features/file/service/providers/file_service_provider.dart';
 import 'package:moviestar/theme/app_theme.dart';
@@ -97,7 +95,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
         side: BorderSide(
-          color: AppTheme.primaryColor.withOpacity(0.2),
+          color: AppTheme.primaryColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -107,7 +105,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(AppTheme.defaultBorderRadius),
               ),
@@ -159,404 +157,9 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
     );
   }
 
-  /// Builds a CSV format information card for each supported directory.
-
-  Widget _buildFormatCard(
-    bool isInBpDirectory,
-    bool isInVaccinationDirectory,
-    bool isInProfileDirectory,
-    bool isInMedicationDirectory,
-  ) {
-    if (!isInBpDirectory &&
-        !isInVaccinationDirectory &&
-        !isInProfileDirectory &&
-        !isInMedicationDirectory) {
-      return const SizedBox.shrink();
-    }
-
-    String title = '';
-    List<String> requiredFields = [];
-    List<String> optionalFields = [];
-    bool isJson = false;
-
-    if (isInBpDirectory) {
-      title = 'Blood Pressure CSV Format';
-      requiredFields = ['timestamp', 'systolic', 'diastolic', 'heart_rate'];
-      optionalFields = ['notes'];
-    } else if (isInVaccinationDirectory) {
-      title = 'Vaccination CSV Format';
-      requiredFields = ['timestamp', 'name', 'type'];
-      optionalFields = ['location', 'notes', 'batch_number'];
-    } else if (isInMedicationDirectory) {
-      title = 'Medication CSV Format';
-      requiredFields = [
-        'timestamp',
-        'name',
-        'dosage',
-        'frequency',
-        'start_date',
-      ];
-      optionalFields = ['notes'];
-    } else if (isInProfileDirectory) {
-      title = 'Profile JSON Format';
-      requiredFields = [
-        'name',
-        'address',
-        'bestContactPhone',
-        'alternativeContactNumber',
-        'email',
-        'dateOfBirth',
-        'gender',
-      ];
-      isJson = true;
-    }
-
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.only(top: 16, bottom: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Theme.of(context).dividerColor.withAlpha(10),
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 20,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Required Fields:',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text('• ${requiredFields.join("\n• ")}'),
-            const SizedBox(height: 8),
-            if (optionalFields.isNotEmpty) ...[
-              Text(
-                'Optional Fields:',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text('• ${optionalFields.join("\n• ")}'),
-              const SizedBox(height: 8),
-            ],
-            Text(
-              isJson
-                  ? 'Note: The JSON file must contain these required fields with valid values.'
-                  : 'Note: The first row should contain these column headers. All values should be in the correct format.',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> convertPDFToJsonUpload(File file) async {
-    try {
-      // Show loading dialog while processing.
-
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
-      );
-
-      // Read PDF file.
-
-      final bytes = await file.readAsBytes();
-      if (!mounted) return;
-      final PdfDocument pdf = PdfDocument(inputBytes: bytes);
-
-      // Extract text from all pages.
-
-      String text = '';
-      for (var i = 0; i < pdf.pages.count; i++) {
-        text += PdfTextExtractor(pdf).extractText(startPageIndex: i);
-      }
-
-      // Structure the data to match kt_pathology.json format.
-
-      final List<String> lines = text.split('\n');
-
-      // Close loading dialog.
-
-      if (!mounted) return;
-      Navigator.pop(context);
-
-      // Extract final structured data.
-
-      final Map<String, dynamic> finalJson = {
-        'timestamp': '',
-        'clinical_note': '',
-        'referrer': '',
-        'clinic': '',
-        'laboratory': '4Cyte Pathology',
-        'pathologist': '',
-        'sodium': 0.0,
-        'potassium': 0.0,
-        'chloride': 0.0,
-        'bicarbonate': 0.0,
-        'anion_gap': 0.0,
-        'urea': 0.0,
-        'creatinine': 0.0,
-        'egfr': 0.0,
-        'total_protien': 0.0,
-        'globulin': 0.0,
-        'albumin': 0.0,
-        'bilirubin_total': 0.0,
-        'alk_phosphatase': 0.0,
-        'gamma_gt': 0.0,
-        'alt': 0.0,
-        'ast': 0.0,
-      };
-
-      // Parse the extracted text.
-
-      for (var line in lines) {
-        line = line.trim();
-        if (line.isEmpty) continue;
-
-        // Extract timestamp.
-
-        if (line.contains('Collected:')) {
-          final dateTime = line.split('Collected:')[1].trim();
-          final parts = dateTime.split(' ');
-          if (parts.length == 2) {
-            final date = parts[0].split('/');
-            if (date.length == 3) {
-              final year = date[2];
-              final month = date[1].padLeft(2, '0');
-              final day = date[0].padLeft(2, '0');
-              final time = parts[1];
-              finalJson['timestamp'] = '$year-$month-$day $time';
-            }
-          }
-        }
-
-        // Extract clinical note.
-
-        if (line.contains('Clinical Notes:')) {
-          finalJson['clinical_note'] = line.split('Clinical Notes:')[1].trim();
-        }
-
-        // Extract referrer.
-
-        if (line.startsWith('Dr ')) {
-          finalJson['referrer'] = line;
-        }
-
-        // Extract clinic address.
-
-        if (line.contains('Medical Centre')) {
-          finalJson['clinic'] = line;
-        }
-
-        // Extract pathologist.
-
-        if (line.contains('Pathologist:')) {
-          finalJson['pathologist'] = line.split('Pathologist:')[1].trim();
-        }
-
-        // Extract test results.
-
-        if (line.contains('Sodium')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['sodium'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Potassium')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['potassium'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Chloride')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['chloride'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Bicarbonate')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['bicarbonate'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Anion Gap')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['anion_gap'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Urea')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['urea'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Creatinine')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['creatinine'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('eGFR')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['egfr'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Total Protein')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['total_protien'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Globulin')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['globulin'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Albumin')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['albumin'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Bilirubin Total')) {
-          final nextLine = lines[lines.indexOf(line) + 1].trim();
-          finalJson['bilirubin_total'] = double.tryParse(nextLine) ?? 0.0;
-        } else if (line.contains('Alk. Phosphatase')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['alk_phosphatase'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('Gamma GT')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['gamma_gt'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('ALT')) {
-          final parts =
-              line.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).toList();
-          if (parts.length >= 2) {
-            finalJson['alt'] = double.tryParse(parts[1]) ?? 0.0;
-          }
-        } else if (line.contains('AST')) {
-          final nextLine = lines[lines.indexOf(line) + 1].trim();
-          finalJson['ast'] = double.tryParse(nextLine) ?? 0.0;
-        }
-      }
-      // Create a temporary file for the final JSON.
-
-      final tempDir = await Directory.systemTemp.createTemp();
-      if (!mounted) return;
-
-      // Create a file with a name based on the original PDF.
-
-      final jsonFile = File(
-        '${tempDir.path}/${path.basenameWithoutExtension(file.path)}_final.json',
-      );
-      await jsonFile.writeAsString(
-        const JsonEncoder.withIndent('  ').convert(finalJson),
-      );
-
-      // Upload both files to POD.
-
-      if (!mounted) return;
-
-      // First upload the PDF.
-
-      ref.read(fileServiceProvider.notifier).setUploadFile(file.path);
-      await ref.read(fileServiceProvider.notifier).handleUpload(context);
-      if (!mounted) return;
-
-      // Then upload the JSON.
-
-      ref.read(fileServiceProvider.notifier).setUploadFile(jsonFile.path);
-      await ref.read(fileServiceProvider.notifier).handleUpload(context);
-      if (!mounted) return;
-
-      // Clean up temporary file.
-
-      await jsonFile.delete();
-      await tempDir.delete();
-
-      // Show success message.
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('PDF and JSON files uploaded successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error processing PDF: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(fileServiceProvider);
-    final isInBpDirectory =
-        state.currentPath?.contains('blood_pressure') ?? false;
-    final isInVaccinationDirectory =
-        state.currentPath?.contains('vaccination') ?? false;
-    final isInDiaryDirectory = state.currentPath?.contains('diary') ?? false;
-    final isInProfileDirectory =
-        state.currentPath?.contains('profile') ?? false;
-    final isInMedicationDirectory =
-        state.currentPath?.contains('medication') ?? false;
-    final showCsvButtons =
-        isInBpDirectory ||
-        isInVaccinationDirectory ||
-        isInMedicationDirectory ||
-        isInDiaryDirectory;
-    final showProfileImportButton = isInProfileDirectory;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -577,17 +180,17 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
         _buildPreviewCard(),
         if (showPreview) const SizedBox(height: 16),
 
-        // Selected file indicator (the one showing in the upload area)
+        // Selected file indicator (the one showing in the upload area).
         if (state.remoteFileName != null &&
             state.remoteFileName != 'remoteFileName')
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.15),
+              color: AppTheme.primaryColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
               border: Border.all(
-                color: AppTheme.primaryColor.withOpacity(0.3),
+                color: AppTheme.primaryColor.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -635,20 +238,14 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                             if (result != null && result.files.isNotEmpty) {
                               final file = result.files.first;
                               if (file.path != null) {
-                                if (file.extension?.toLowerCase() == 'pdf') {
-                                  await convertPDFToJsonUpload(
-                                    File(file.path!),
-                                  );
-                                } else {
-                                  ref
-                                      .read(fileServiceProvider.notifier)
-                                      .setUploadFile(file.path);
-                                  await handlePreview(file.path!);
-                                  if (!context.mounted) return;
-                                  await ref
-                                      .read(fileServiceProvider.notifier)
-                                      .handleUpload(context);
-                                }
+                                ref
+                                    .read(fileServiceProvider.notifier)
+                                    .setUploadFile(file.path);
+                                await handlePreview(file.path!);
+                                if (!context.mounted) return;
+                                await ref
+                                    .read(fileServiceProvider.notifier)
+                                    .handleUpload(context);
                               }
                             }
                           },
@@ -674,14 +271,6 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
               ),
             ),
           ],
-        ),
-
-        // Display CSV format information card.
-        _buildFormatCard(
-          isInBpDirectory,
-          isInVaccinationDirectory,
-          isInProfileDirectory,
-          isInMedicationDirectory,
         ),
 
         const SizedBox(height: 12),
@@ -722,7 +311,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                   AppTheme.defaultBorderRadius,
                 ),
               ),
-              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+              backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
             ),
           ),
         ),
@@ -756,7 +345,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                     AppTheme.defaultBorderRadius,
                   ),
                 ),
-                backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
               ),
             ),
           ),
