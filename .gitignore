@@ -39,6 +39,8 @@ doc/api/
 # Mac
 .DS_Store
 
+# Platform directories
+macos/
 # macOS specific files
 *.mode1v3
 *.mode2v3
