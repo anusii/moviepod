@@ -110,21 +110,24 @@ class FileBrowserContent extends StatelessWidget {
               : ListView(
                 padding: const EdgeInsets.all(AppTheme.defaultPadding / 2),
                 children: [
-                  // Directory list
+                  // Directory list.
+                  
                   DirectoryList(
                     directories: directories,
                     directoryCounts: directoryCounts,
                     onDirectorySelected: onDirectorySelected,
                   ),
 
-                  // Add visual separator if both directories and files exist
+                  // Add visual separator if both directories and files exist.
+                  
                   if (directories.isNotEmpty && files.isNotEmpty)
                     const Divider(
                       height: 24,
                       color: AppTheme.secondaryTextColor,
                     ),
 
-                  // File list
+                  // File list.
+                  
                   FileList(
                     files: files,
                     currentPath: currentPath,

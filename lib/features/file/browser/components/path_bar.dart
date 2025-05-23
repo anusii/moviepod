@@ -98,6 +98,7 @@ class PathBar extends StatelessWidget {
         child: Row(
           children: [
             // Back button (only shown if there's history).
+
             if (pathHistory.length > 1)
               IconButton(
                 icon: const Icon(
@@ -112,6 +113,7 @@ class PathBar extends StatelessWidget {
             if (pathHistory.length > 1) const SizedBox(width: 12),
 
             // Path text display.
+
             Expanded(
               child: Text(
                 friendlyFolderName,
@@ -124,6 +126,7 @@ class PathBar extends StatelessWidget {
             ),
 
             // File count.
+
             Text(
               'Files in current directory: $currentDirFileCount',
               style: const TextStyle(
@@ -134,6 +137,7 @@ class PathBar extends StatelessWidget {
             const SizedBox(width: 12),
 
             // Refresh button.
+            
             IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),

@@ -48,11 +48,13 @@ class EmptyDirectoryView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Display a large folder icon with reduced opacity.
+
           const Icon(Icons.folder_open, size: 48, color: AppTheme.primaryColor),
 
           const SizedBox(height: 16),
 
           // Display empty state message.
+          
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: BoxDecoration(

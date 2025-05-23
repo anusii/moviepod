@@ -59,7 +59,8 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
     super.didChangeDependencies();
     final state = ref.read(fileServiceProvider);
 
-    // Update preview when a file is selected from browser or uploaded
+    // Update preview when a file is selected from browser or uploaded.
+
     if (state.filePreview != null) {
       setState(() {
         filePreview = state.filePreview;
@@ -69,6 +70,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
   }
 
   /// Handles file preview before upload to display its content or basic info.
+  
   Future<void> handlePreview(String filePath) async {
     try {
       final file = File(filePath);
@@ -189,10 +191,12 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
         const SizedBox(height: 16),
 
         // Display preview card if enabled.
+      
         _buildPreviewCard(),
         if (showPreview) const SizedBox(height: 16),
 
         // Selected file indicator (the one showing in the upload area).
+
         if (state.remoteFileName != null &&
             state.remoteFileName != 'remoteFileName')
           Container(
@@ -230,9 +234,11 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
           ),
 
         // Upload and CSV buttons row.
+
         Row(
           children: [
             // Main upload button.
+
             Expanded(
               child: MarkdownTooltip(
                 message: '''
@@ -340,6 +346,7 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
         ),
 
         // Preview button.
+        
         if (state.uploadFile != null) ...[
           const SizedBox(height: 12),
           MarkdownTooltip(
