@@ -54,31 +54,43 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
   String? filePreview;
   bool showPreview = false;
 
-  /// Handles file preview before upload to display its content or basic info.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final state = ref.read(fileServiceProvider);
 
+    // Update preview when a file is selected from browser or uploaded
+    if (state.filePreview != null) {
+      setState(() {
+        filePreview = state.filePreview;
+        showPreview = true;
+      });
+    }
+  }
+
+  /// Handles file preview before upload to display its content or basic info.
   Future<void> handlePreview(String filePath) async {
     try {
       final file = File(filePath);
       String content;
 
       if (isTextFile(filePath)) {
-        // For text files, show the first 500 characters.
-
         content = await file.readAsString();
         content =
             content.length > 500 ? '${content.substring(0, 500)}...' : content;
       } else {
-        // For binary files, show their size and type.
-
         final bytes = await file.readAsBytes();
         content =
             'Binary file\nSize: ${(bytes.length / 1024).toStringAsFixed(2)} KB\nType: ${path.extension(filePath)}';
       }
 
+      // Update both local state and provider state.
+
       setState(() {
         filePreview = content;
         showPreview = true;
       });
+      ref.read(fileServiceProvider.notifier).setFilePreview(content);
     } catch (e) {
       debugPrint('Preview error: $e');
     }
@@ -246,6 +258,17 @@ class _FileUploadSectionState extends ConsumerState<FileUploadSection> {
                                 await ref
                                     .read(fileServiceProvider.notifier)
                                     .handleUpload(context);
+                                // Clear the upload file after successful upload.
+
+                                ref
+                                    .read(fileServiceProvider.notifier)
+                                    .setUploadFile(null);
+                                // Clear the preview.
+
+                                setState(() {
+                                  filePreview = null;
+                                  showPreview = false;
+                                });
                               }
                             }
                           },
