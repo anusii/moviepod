@@ -26,32 +26,42 @@
 import 'package:flutter/material.dart';
 
 /// Theme configuration for the Movie Star application.
+
 class AppTheme {
   /// Primary color for the application.
+
   static const Color primaryColor = Colors.red;
 
   /// Background color for the application.
+
   static const Color backgroundColor = Colors.black;
 
   /// Text color for primary text.
+
   static const Color primaryTextColor = Colors.white;
 
   /// Text color for secondary text.
+
   static const Color secondaryTextColor = Colors.grey;
 
   /// Color for selected items in navigation.
+
   static const Color selectedItemColor = Colors.white;
 
   /// Color for unselected items in navigation.
+
   static const Color unselectedItemColor = Colors.grey;
 
   /// Default padding for content.
+
   static const double defaultPadding = 16.0;
 
   /// Default border radius for rounded corners.
+
   static const double defaultBorderRadius = 8.0;
 
   /// Creates the light theme for the application.
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -136,6 +146,7 @@ class AppTheme {
   }
 
   /// Creates the dark theme for the application.
+
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,

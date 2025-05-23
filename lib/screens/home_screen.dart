@@ -33,12 +33,12 @@ import 'search_screen.dart';
 
 /// A screen that displays various movie categories and trending content.
 class HomeScreen extends StatefulWidget {
-  // Service for managing favorite movies.
+  /// Service for managing favorite movies.
 
   final FavoritesService favoritesService;
   final MovieService movieService;
 
-  // Creates a new [HomeScreen] widget.
+  /// Creates a new [HomeScreen] widget.
 
   const HomeScreen({
     super.key,
@@ -50,28 +50,35 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// State class for the home screen.
+/// State class for the home screen.
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Loading state indicator.
+  /// Loading state indicator.
+
   bool _isLoading = true;
 
-  // Error message if any.
+  /// Error message if any.
+
   String? _error;
 
-  // List of popular movies.
+  /// List of popular movies.
+
   List<Movie> _popularMovies = [];
 
-  // List of now playing movies.
+  /// List of now playing movies.
+
   List<Movie> _nowPlayingMovies = [];
 
-  // List of top rated movies.
+  /// List of top rated movies.
+
   List<Movie> _topRatedMovies = [];
 
-  // List of upcoming movies.
+  /// List of upcoming movies.
+
   List<Movie> _upcomingMovies = [];
 
-  // Map of scroll controllers for different movie categories.
+  /// Map of scroll controllers for different movie categories.
+
   final Map<String, ScrollController> _scrollControllers = {};
 
   @override
@@ -87,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didUpdateWidget(HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Check if the movie service instance has changed or been updated
+    // Check if the movie service instance has changed or been updated.
+
     if (oldWidget.movieService != widget.movieService) {
       _loadAllMovies();
     }
@@ -102,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Loads all movie categories.
+
   Future<void> _loadAllMovies() async {
     setState(() {
       _isLoading = true;
@@ -130,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Builds a horizontal scrollable row of movies.
+
   Widget _buildMovieRow(String title, List<Movie> movies, String key) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

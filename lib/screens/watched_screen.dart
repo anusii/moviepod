@@ -30,11 +30,14 @@ import '../services/favorites_service.dart';
 import 'movie_details_screen.dart';
 
 /// A screen that displays the user's list of watched movies.
+
 class WatchedScreen extends StatefulWidget {
   /// Service for managing favorite movies.
+
   final FavoritesService favoritesService;
 
   /// Creates a new [WatchedScreen] widget.
+
   const WatchedScreen({super.key, required this.favoritesService});
 
   @override
@@ -42,6 +45,7 @@ class WatchedScreen extends StatefulWidget {
 }
 
 /// State class for the watched screen.
+
 class _WatchedScreenState extends State<WatchedScreen> {
   @override
   Widget build(BuildContext context) {
@@ -90,11 +94,10 @@ class _WatchedScreenState extends State<WatchedScreen> {
                     width: 50,
                     height: 75,
                     fit: BoxFit.cover,
-                    placeholder:
-                        (context, url) =>
-                            const Center(child: CircularProgressIndicator()),
-                    errorWidget:
-                        (context, url, error) => const Icon(Icons.error),
+                    placeholder: (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
                 title: Text(
@@ -118,11 +121,10 @@ class _WatchedScreenState extends State<WatchedScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (context) => MovieDetailsScreen(
-                            movie: movie,
-                            favoritesService: widget.favoritesService,
-                          ),
+                      builder: (context) => MovieDetailsScreen(
+                        movie: movie,
+                        favoritesService: widget.favoritesService,
+                      ),
                     ),
                   );
                 },

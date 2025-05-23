@@ -31,15 +31,19 @@ import 'to_watch_screen.dart';
 import 'watched_screen.dart';
 
 /// A screen that displays and manages user settings.
+
 class SettingsScreen extends StatefulWidget {
   /// Service for managing favorite movies.
+
   final FavoritesService favoritesService;
   final ApiKeyService apiKeyService;
 
-  /// Whether this screen was opened from the API key prompt
+  /// Whether this screen was opened from the API key prompt.
+
   final bool fromApiKeyPrompt;
 
   /// Creates a new [SettingsScreen] widget.
+
   const SettingsScreen({
     super.key,
     required this.favoritesService,
@@ -52,26 +56,34 @@ class SettingsScreen extends StatefulWidget {
 }
 
 /// State class for the settings screen.
+
 class _SettingsScreenState extends State<SettingsScreen> {
   /// Whether notifications are enabled.
+
   bool _notificationsEnabled = true;
 
   /// Whether auto-play is enabled.
+
   bool _autoPlayEnabled = true;
 
   /// Selected language for the app.
+
   String _selectedLanguage = 'English';
 
   /// Selected video quality.
+
   String _selectedQuality = 'High';
 
   /// Controller for the API key input field.
+
   late final TextEditingController _apiKeyController;
 
-  /// Focus node for the API key input field
+  /// Focus node for the API key input field.
+
   final FocusNode _apiKeyFocusNode = FocusNode();
 
-  /// Launch a URL in the browser
+  /// Launch a URL in the browser.
+
   Future<void> _launchUrl(Uri url) async {
     if (!await launchUrl(url)) {
       throw Exception('Could not launch $url');
@@ -85,9 +97,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       text: widget.apiKeyService.getApiKey(),
     );
 
-    // If navigated from API key prompt, scroll to the API key section and focus the field
+    // If navigated from API key prompt, scroll to the API key section and focus the field.
+
     if (widget.fromApiKeyPrompt) {
-      // Use post-frame callback to ensure the widget is fully built
+      // Use post-frame callback to ensure the widget is fully built.
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _apiKeyFocusNode.requestFocus();
       });
@@ -112,7 +126,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          // Profile Picture
+          // Profile Picture.
+
           Center(
             child: Stack(
               children: [
@@ -141,7 +156,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          // Settings Sections
+          // Settings Sections.
+
           _buildSection('API Configuration', [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -196,9 +212,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      // Launch TMDB website to get API key
-                      // Using a placeholder URL launcher here that you'd need to implement
-                      // with url_launcher package
+                      // Launch TMDB website to get API key.
+
                       final Uri url = Uri.parse(
                           'https://www.themoviedb.org/?language=en-AU');
                       _launchUrl(url);
@@ -219,15 +234,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
 
                       if (mounted) {
-                        // Show success message
+                        // Show success message.
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('API key saved successfully'),
                             backgroundColor: Colors.green,
                           ),
                         );
+                        // If we navigated here from the API key prompt, navigate back to home.
 
-                        // If we navigated here from the API key prompt, navigate back to home
                         if (widget.fromApiKeyPrompt) {
                           _navigateToHomeScreen();
                         }
@@ -286,18 +302,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (context) => WatchedScreen(
-                        favoritesService: widget.favoritesService,
-                      ),
+                  builder: (context) => WatchedScreen(
+                    favoritesService: widget.favoritesService,
+                  ),
                 ),
               );
             }),
             _buildListTile('Help & Support', Icons.help_outline, () {
-              // TODO: Navigate to Help & Support
+              // TODO: Navigate to Help & Support.
             }),
             _buildListTile('Sign Out', Icons.logout, () {
-              // TODO: Implement sign out
+              // TODO: Implement sign out.
             }, isDestructive: true),
           ]),
         ],
@@ -306,6 +321,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   /// Builds a section of settings with a title and children widgets.
+
   Widget _buildSection(String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,6 +344,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   /// Builds a switch tile for boolean settings.
+
   Widget _buildSwitchTile(
     String title,
     String subtitle,
@@ -344,6 +361,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   /// Builds a dropdown tile for selection settings.
+
   Widget _buildDropdownTile(
     String title,
     String value,
@@ -368,6 +386,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   /// Builds a list tile for navigation items.
+
   Widget _buildListTile(
     String title,
     IconData icon,
@@ -385,16 +404,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _navigateToHomeScreen() {
-    // Navigate back to the main home screen
+    // Navigate back to the main home screen.
+
     Navigator.of(context).popUntil((route) => route.isFirst);
 
-    // Find the MyHomePage instance
+    // Find the MyHomePage instance.
+
     final scaffoldContext = context;
 
-    // Try to find the nearest ancestor of type MyHomePage (or its State)
-    // and select the Home tab (index 0)
+    // Try to find the nearest ancestor of type MyHomePage (or its State) and select the Home tab (index 0).
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Use the scaffold to show a message to the user
+      // Use the scaffold to show a message to the user.
+
       ScaffoldMessenger.of(scaffoldContext).showSnackBar(
         const SnackBar(
           content: Text('Movie data will now load with your new API key'),
