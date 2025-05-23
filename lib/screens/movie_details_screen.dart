@@ -30,14 +30,18 @@ import '../services/favorites_service.dart';
 import '../utils/date_format_util.dart';
 
 /// A screen that displays detailed information about a selected movie.
+
 class MovieDetailsScreen extends StatefulWidget {
   /// The movie to display details for.
+
   final Movie movie;
 
   /// Service for managing favorite movies.
+
   final FavoritesService favoritesService;
 
   /// Creates a new [MovieDetailsScreen] widget.
+
   const MovieDetailsScreen({
     super.key,
     required this.movie,
@@ -49,11 +53,14 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 /// State class for the movie details screen.
+
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   /// Indicates whether the movie is in the to-watch list.
+
   bool _isInToWatch = false;
 
   /// Indicates whether the movie is in the watched list.
+
   bool _isInWatched = false;
 
   /// Personal rating for the movie.
@@ -70,6 +77,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   /// Checks if the current movie is in either list.
+
   Future<void> _checkListStatus() async {
     final isInToWatch = await widget.favoritesService.isInToWatch(widget.movie);
     final isInWatched = await widget.favoritesService.isInWatched(widget.movie);
@@ -80,6 +88,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   /// Toggles the to-watch status of the current movie.
+
   Future<void> _toggleToWatch() async {
     if (_isInToWatch) {
       await widget.favoritesService.removeFromToWatch(widget.movie);
@@ -92,6 +101,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   /// Toggles the watched status of the current movie.
+
   Future<void> _toggleWatched() async {
     if (_isInWatched) {
       await widget.favoritesService.removeFromWatched(widget.movie);
@@ -138,9 +148,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               background: CachedNetworkImage(
                 imageUrl: widget.movie.backdropUrl,
                 fit: BoxFit.cover,
-                placeholder:
-                    (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -174,10 +183,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInToWatch ? Colors.blue : Colors.white,
                             ),
                             onPressed: _toggleToWatch,
-                            tooltip:
-                                _isInToWatch
-                                    ? 'Remove from To Watch'
-                                    : 'Add to To Watch',
+                            tooltip: _isInToWatch
+                                ? 'Remove from To Watch'
+                                : 'Add to To Watch',
                           ),
                           IconButton(
                             icon: Icon(
@@ -187,10 +195,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInWatched ? Colors.green : Colors.white,
                             ),
                             onPressed: _toggleWatched,
-                            tooltip:
-                                _isInWatched
-                                    ? 'Remove from Watched'
-                                    : 'Add to Watched',
+                            tooltip: _isInWatched
+                                ? 'Remove from Watched'
+                                : 'Add to Watched',
                           ),
                         ],
                       ),

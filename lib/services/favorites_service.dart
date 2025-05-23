@@ -29,11 +29,14 @@ import 'package:rxdart/rxdart.dart';
 import '../models/movie.dart';
 
 /// A service class that manages the user's movie lists.
+
 class FavoritesService {
   /// Key used to store to-watch movies in shared preferences.
+
   static const String _toWatchKey = 'to_watch';
 
   /// Key used to store watched movies in shared preferences.
+
   static const String _watchedKey = 'watched';
 
   /// Key used to store favorites in shared preferences.
@@ -43,26 +46,33 @@ class FavoritesService {
   static const String _ratingsKey = 'ratings';
 
   /// Shared preferences instance for storing movie lists.
+
   final SharedPreferences _prefs;
 
   /// Stream controller for to-watch movies.
+
   final _toWatchController = BehaviorSubject<List<Movie>>();
 
   /// Stream controller for watched movies.
+
   final _watchedController = BehaviorSubject<List<Movie>>();
 
   /// Stream of to-watch movies.
+
   Stream<List<Movie>> get toWatchMovies => _toWatchController.stream;
 
   /// Stream of watched movies.
+
   Stream<List<Movie>> get watchedMovies => _watchedController.stream;
 
   /// Creates a new [FavoritesService] instance.
+
   FavoritesService(this._prefs) {
     _loadMovies();
   }
 
   /// Loads both movie lists and emits them to their respective streams.
+
   Future<void> _loadMovies() async {
     final toWatch = await getToWatch();
     final watched = await getWatched();
@@ -71,6 +81,7 @@ class FavoritesService {
   }
 
   /// Retrieves the list of to-watch movies.
+
   Future<List<Movie>> getToWatch() async {
     final String? moviesJson = _prefs.getString(_toWatchKey);
     if (moviesJson == null) return [];
@@ -80,6 +91,7 @@ class FavoritesService {
   }
 
   /// Retrieves the list of watched movies.
+
   Future<List<Movie>> getWatched() async {
     final String? moviesJson = _prefs.getString(_watchedKey);
     if (moviesJson == null) return [];
@@ -89,6 +101,7 @@ class FavoritesService {
   }
 
   /// Adds a movie to the to-watch list.
+
   Future<void> addToWatch(Movie movie) async {
     final toWatch = await getToWatch();
     if (!toWatch.any((m) => m.id == movie.id)) {
@@ -99,6 +112,7 @@ class FavoritesService {
   }
 
   /// Adds a movie to the watched list.
+
   Future<void> addToWatched(Movie movie) async {
     final watched = await getWatched();
     if (!watched.any((m) => m.id == movie.id)) {
@@ -109,6 +123,7 @@ class FavoritesService {
   }
 
   /// Removes a movie from the to-watch list.
+
   Future<void> removeFromToWatch(Movie movie) async {
     final toWatch = await getToWatch();
     toWatch.removeWhere((m) => m.id == movie.id);
@@ -117,6 +132,7 @@ class FavoritesService {
   }
 
   /// Removes a movie from the watched list.
+
   Future<void> removeFromWatched(Movie movie) async {
     final watched = await getWatched();
     watched.removeWhere((m) => m.id == movie.id);
@@ -125,24 +141,28 @@ class FavoritesService {
   }
 
   /// Checks if a movie is in the to-watch list.
+
   Future<bool> isInToWatch(Movie movie) async {
     final toWatch = await getToWatch();
     return toWatch.any((m) => m.id == movie.id);
   }
 
   /// Checks if a movie is in the watched list.
+
   Future<bool> isInWatched(Movie movie) async {
     final watched = await getWatched();
     return watched.any((m) => m.id == movie.id);
   }
 
   /// Saves the list of to-watch movies to shared preferences.
+
   Future<void> _saveToWatch(List<Movie> movies) async {
     final encoded = jsonEncode(movies.map((m) => m.toJson()).toList());
     await _prefs.setString(_toWatchKey, encoded);
   }
 
   /// Saves the list of watched movies to shared preferences.
+
   Future<void> _saveWatched(List<Movie> movies) async {
     final encoded = jsonEncode(movies.map((m) => m.toJson()).toList());
     await _prefs.setString(_watchedKey, encoded);
@@ -181,6 +201,7 @@ class FavoritesService {
   }
 
   /// Disposes the stream controllers.
+
   void dispose() {
     _toWatchController.close();
     _watchedController.close();

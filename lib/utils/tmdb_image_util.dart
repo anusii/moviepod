@@ -24,11 +24,14 @@
 /// Authors: Kevin Wang
 
 /// A utility class for handling TMDB image URLs.
+
 class TmdbImageUtil {
   /// Base URL for TMDB images.
+
   static const String _baseUrl = 'https://image.tmdb.org/t/p';
 
   /// Available image sizes for posters.
+
   static const Map<String, String> posterSizes = {
     'w92': 'w92',
     'w154': 'w154',
@@ -40,6 +43,7 @@ class TmdbImageUtil {
   };
 
   /// Available image sizes for backdrops.
+
   static const Map<String, String> backdropSizes = {
     'w300': 'w300',
     'w780': 'w780',
@@ -48,6 +52,7 @@ class TmdbImageUtil {
   };
 
   /// Available image sizes for profile pictures.
+
   static const Map<String, String> profileSizes = {
     'w45': 'w45',
     'w185': 'w185',
@@ -56,36 +61,40 @@ class TmdbImageUtil {
   };
 
   /// Creates a poster URL with the specified size.
+
   static String getPosterUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
-    // Remove any existing size prefixes
+    // Remove any existing size prefixes.
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${posterSizes[size] ?? posterSizes['w185']!}$cleanPath';
   }
 
   /// Creates a backdrop URL with the specified size.
+
   static String getBackdropUrl(String path, {String size = 'w780'}) {
     if (path.isEmpty) return '';
-    // Remove any existing size prefixes
+    // Remove any existing size prefixes.
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${backdropSizes[size] ?? backdropSizes['w780']!}$cleanPath';
   }
 
   /// Creates a profile picture URL with the specified size.
+
   static String getProfileUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
-    // Remove any existing size prefixes
+    // Remove any existing size prefixes.
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${profileSizes[size] ?? profileSizes['w185']!}$cleanPath';
   }
 
   /// Extracts the path from a full TMDB image URL.
+
   static String extractPath(String url) {
     if (url.isEmpty) return '';
     final uri = Uri.parse(url);
     final pathSegments = uri.pathSegments;
     if (pathSegments.length < 2) return '';
-    // Return only the last segment (the actual file path)
+    // Return only the last segment (the actual file path).
     return '/${pathSegments.last}';
   }
 }
