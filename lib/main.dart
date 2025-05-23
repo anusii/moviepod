@@ -114,6 +114,36 @@ class _MyHomePageState extends State<MyHomePage> {
     _favoritesService = FavoritesService(widget.prefs);
     _apiKeyService = ApiKeyService(widget.prefs);
     _movieService = MovieService(_apiKeyService);
+
+    // Listen for API key changes
+    _apiKeyService.addListener(_onApiKeyChanged);
+
+    _buildScreens();
+  }
+
+  @override
+  void dispose() {
+    _apiKeyService.removeListener(_onApiKeyChanged);
+    super.dispose();
+  }
+
+  void _onApiKeyChanged() {
+    // When API key changes, update the movie service
+    _movieService.updateApiKey();
+
+    // Rebuild screens to ensure they have the latest data
+    setState(() {
+      _buildScreens();
+    });
+
+    // If we're on the home screen, make sure it reloads
+    if (_selectedIndex == 0) {
+      // Force refresh by rebuilding
+      setState(() {});
+    }
+  }
+
+  void _buildScreens() {
     _screens = [
       HomeScreen(
         favoritesService: _favoritesService,
