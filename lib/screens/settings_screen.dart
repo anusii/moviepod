@@ -24,6 +24,7 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/favorites_service.dart';
 import '../services/api_key_service.dart';
 import 'to_watch_screen.dart';
@@ -61,6 +62,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   /// Controller for the API key input field.
   late final TextEditingController _apiKeyController;
+
+  /// Launch a URL in the browser
+  Future<void> _launchUrl(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   void initState() {
@@ -127,6 +135,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     'MovieDB API Key',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Required to fetch movie data and images',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _apiKeyController,
@@ -144,6 +157,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     obscureText: true,
                   ),
                   const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () {
+                      // Launch TMDB website to get API key
+                      // Using a placeholder URL launcher here that you'd need to implement
+                      // with url_launcher package
+                      final Uri url = Uri.parse(
+                          'https://www.themoviedb.org/?language=en-AU');
+                      _launchUrl(url);
+                    },
+                    child: const Text(
+                      'Get your API key from The Movie Database (TMDB)',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () async {
                       await widget.apiKeyService.setApiKey(
@@ -201,10 +232,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (context) => ToWatchScreen(
-                        favoritesService: widget.favoritesService,
-                      ),
+                  builder: (context) => ToWatchScreen(
+                    favoritesService: widget.favoritesService,
+                  ),
                 ),
               );
             }),
@@ -272,13 +302,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: Text(title, style: const TextStyle(color: Colors.white)),
       trailing: DropdownButton<String>(
         value: value,
-        items:
-            items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item, style: const TextStyle(color: Colors.white)),
-              );
-            }).toList(),
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item, style: const TextStyle(color: Colors.white)),
+          );
+        }).toList(),
         onChanged: onChanged,
         dropdownColor: Colors.grey[900],
         underline: const SizedBox(),
