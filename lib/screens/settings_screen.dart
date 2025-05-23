@@ -24,6 +24,7 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/favorites_service.dart';
 import '../services/api_key_service.dart';
 import 'to_watch_screen.dart';
@@ -35,11 +36,15 @@ class SettingsScreen extends StatefulWidget {
   final FavoritesService favoritesService;
   final ApiKeyService apiKeyService;
 
+  /// Whether this screen was opened from the API key prompt
+  final bool fromApiKeyPrompt;
+
   /// Creates a new [SettingsScreen] widget.
   const SettingsScreen({
     super.key,
     required this.favoritesService,
     required this.apiKeyService,
+    this.fromApiKeyPrompt = false,
   });
 
   @override
@@ -63,17 +68,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Controller for the API key input field.
   late final TextEditingController _apiKeyController;
 
+  /// Focus node for the API key input field
+  final FocusNode _apiKeyFocusNode = FocusNode();
+
+  /// Launch a URL in the browser
+  Future<void> _launchUrl(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _apiKeyController = TextEditingController(
       text: widget.apiKeyService.getApiKey(),
     );
+
+    // If navigated from API key prompt, scroll to the API key section and focus the field
+    if (widget.fromApiKeyPrompt) {
+      // Use post-frame callback to ensure the widget is fully built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _apiKeyFocusNode.requestFocus();
+      });
+    }
   }
 
   @override
   void dispose() {
     _apiKeyController.dispose();
+    _apiKeyFocusNode.dispose();
     super.dispose();
   }
 
@@ -128,10 +152,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     'MovieDB API Key',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: const Text(
+                          'Required to fetch movie data and images',
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ),
+                      if (widget.fromApiKeyPrompt)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            'Required',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _apiKeyController,
                     style: const TextStyle(color: Colors.white),
+                    focusNode: _apiKeyFocusNode,
                     decoration: InputDecoration(
                       hintText: 'Enter your MovieDB API key',
                       hintStyle: const TextStyle(color: Colors.grey),
@@ -145,18 +194,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     obscureText: true,
                   ),
                   const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () {
+                      // Launch TMDB website to get API key
+                      // Using a placeholder URL launcher here that you'd need to implement
+                      // with url_launcher package
+                      final Uri url = Uri.parse(
+                          'https://www.themoviedb.org/?language=en-AU');
+                      _launchUrl(url);
+                    },
+                    child: const Text(
+                      'Get your API key from The Movie Database (TMDB)',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () async {
                       await widget.apiKeyService.setApiKey(
                         _apiKeyController.text,
                       );
+
                       if (mounted) {
+                        // Show success message
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('API key saved successfully'),
                             backgroundColor: Colors.green,
                           ),
                         );
+
+                        // If we navigated here from the API key prompt, navigate back to home
+                        if (widget.fromApiKeyPrompt) {
+                          _navigateToHomeScreen();
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -202,10 +276,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (context) => ToWatchScreen(
-                        favoritesService: widget.favoritesService,
-                      ),
+                  builder: (context) => ToWatchScreen(
+                    favoritesService: widget.favoritesService,
+                  ),
                 ),
               );
             }),
@@ -281,13 +354,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: Text(title, style: const TextStyle(color: Colors.white)),
       trailing: DropdownButton<String>(
         value: value,
-        items:
-            items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item, style: const TextStyle(color: Colors.white)),
-              );
-            }).toList(),
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item, style: const TextStyle(color: Colors.white)),
+          );
+        }).toList(),
         onChanged: onChanged,
         dropdownColor: Colors.grey[900],
         underline: const SizedBox(),
@@ -310,5 +382,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       onTap: onTap,
     );
+  }
+
+  void _navigateToHomeScreen() {
+    // Navigate back to the main home screen
+    Navigator.of(context).popUntil((route) => route.isFirst);
+
+    // Find the MyHomePage instance
+    final scaffoldContext = context;
+
+    // Try to find the nearest ancestor of type MyHomePage (or its State)
+    // and select the Home tab (index 0)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Use the scaffold to show a message to the user
+      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+        const SnackBar(
+          content: Text('Movie data will now load with your new API key'),
+          backgroundColor: Colors.blue,
+        ),
+      );
+    });
   }
 }
