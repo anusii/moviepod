@@ -37,10 +37,15 @@ class ComingSoonScreen extends StatefulWidget {
   // Service for managing favorite movies.
 
   final FavoritesService favoritesService;
+  final MovieService movieService;
 
   // Creates a new [ComingSoonScreen] widget.
 
-  const ComingSoonScreen({super.key, required this.favoritesService});
+  const ComingSoonScreen({
+    super.key,
+    required this.favoritesService,
+    required this.movieService,
+  });
 
   @override
   State<ComingSoonScreen> createState() => _ComingSoonScreenState();
@@ -49,20 +54,13 @@ class ComingSoonScreen extends StatefulWidget {
 // State class for the coming soon screen.
 
 class _ComingSoonScreenState extends State<ComingSoonScreen> {
-  // Service for fetching movie data.
-
-  final MovieService _movieService = MovieService();
-
   // Loading state indicator.
-
   bool _isLoading = false;
 
   // Error message if any.
-
   String? _error;
 
   // List of upcoming movies.
-
   List<Movie> _upcomingMovies = [];
 
   @override
@@ -80,7 +78,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
     });
 
     try {
-      final movies = await _movieService.getUpcomingMovies();
+      final movies = await widget.movieService.getUpcomingMovies();
       setState(() {
         _upcomingMovies = movies;
         _isLoading = false;
