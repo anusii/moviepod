@@ -248,6 +248,7 @@ class FileBrowserState extends State<FileBrowser> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Navigation and path display bar.
+
             PathBar(
               currentPath: currentPath,
               pathHistory: pathHistory,
@@ -261,6 +262,7 @@ class FileBrowserState extends State<FileBrowser> {
             const SizedBox(height: 12),
 
             // Main content area with conditional rendering.
+            
             Expanded(
               child:
                   isLoading

@@ -98,6 +98,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
   void initState() {
     super.initState();
     // Set up the refresh callback after the widget is built.
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(fileServiceProvider.notifier).setRefreshCallback(() {
         _browserKey.currentState?.refreshFiles();
@@ -125,6 +126,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Back button to root folder (now only the button).
+
         Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
           child: TextButton.icon(
@@ -158,6 +160,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
         ),
 
         // Main content area.
+        
         Expanded(
           child: SingleChildScrollView(
             child:
@@ -166,6 +169,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // File browser on the left.
+
                         Expanded(
                           flex: 2,
                           child: Card(
@@ -233,7 +237,8 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                     ..handleDownload(context);
                                 },
                                 onFileDelete: (name, filePath) async {
-                                  // Show confirmation dialog before deleting
+                                  // Show confirmation dialog before deleting.
+                                  
                                   final bool? confirm = await showDialog<bool>(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -289,8 +294,9 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                 },
                                 onImportCsv: (name, filePath) {
                                   if (mounted) {
-                                    // The provider doesn't have an importCsv method
-                                    // Just refresh the file list instead
+                                    // The provider doesn't have an importCsv method.
+                                    // Just refresh the file list instead.
+                                    
                                     ref
                                         .read(fileServiceProvider.notifier)
                                         .updateCurrentPath(filePath);
@@ -310,6 +316,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                         ),
 
                         // Upload section on the right.
+
                         Expanded(
                           flex: 1,
                           child: Card(
@@ -337,6 +344,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // File browser.
+
                         Card(
                           color: Colors.grey[900],
                           shape: RoundedRectangleBorder(
@@ -398,7 +406,8 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                   ..handleDownload(context);
                               },
                               onFileDelete: (name, filePath) async {
-                                // Show confirmation dialog before deleting
+                                // Show confirmation dialog before deleting.
+                                
                                 final bool? confirm = await showDialog<bool>(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -454,8 +463,9 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                               },
                               onImportCsv: (name, filePath) {
                                 if (mounted) {
-                                  // The provider doesn't have an importCsv method
-                                  // Just refresh the file list instead
+                                  // The provider doesn't have an importCsv method.
+                                  // Just refresh the file list instead.
+                                  
                                   ref
                                       .read(fileServiceProvider.notifier)
                                       .updateCurrentPath(filePath);
@@ -474,6 +484,7 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                         ),
 
                         // Upload section.
+
                         Card(
                           color: Colors.grey[900],
                           shape: RoundedRectangleBorder(
