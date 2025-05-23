@@ -26,23 +26,28 @@
 import 'package:intl/intl.dart';
 
 /// A utility class for formatting dates in a consistent and locale-aware manner.
+
 class DateFormatUtil {
   /// Formats a date in a short format (e.g., "Apr 10, 2025").
+
   static String formatShort(DateTime date) {
     return DateFormat.yMMMd().format(date);
   }
 
   /// Formats a date in a long format (e.g., "April 10, 2025").
+
   static String formatLong(DateTime date) {
     return DateFormat.yMMMMd().format(date);
   }
 
   /// Formats a date in a numeric format (e.g., "10/04/2025").
+
   static String formatNumeric(DateTime date) {
     return DateFormat.yMd().format(date);
   }
 
   /// Formats a date in a relative format (e.g., "2 days ago", "in 3 months").
+
   static String formatRelative(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
@@ -70,6 +75,7 @@ class DateFormatUtil {
   }
 
   /// Formats a date range (e.g., "Apr 10 - May 15, 2025").
+
   static String formatDateRange(DateTime start, DateTime end) {
     if (start.year == end.year) {
       if (start.month == end.month) {
