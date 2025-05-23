@@ -32,6 +32,7 @@ import 'package:moviestar/screens/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
 import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/features/file/service/page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       HomeScreen(favoritesService: _favoritesService),
       ComingSoonScreen(favoritesService: _favoritesService),
       const DownloadsScreen(),
+      const FileService(),
       ProfileScreen(favoritesService: _favoritesService),
     ];
   }
@@ -138,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.download),
             label: 'Downloads',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Files'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
