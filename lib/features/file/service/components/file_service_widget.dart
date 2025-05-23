@@ -30,11 +30,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviestar/constants/paths.dart';
 import 'package:path/path.dart' as path;
+import 'package:solidpod/solidpod.dart';
 
 import 'package:moviestar/features/file/browser/page.dart';
 import 'package:moviestar/features/file/service/components/file_upload_section.dart';
 import 'package:moviestar/features/file/service/providers/file_service_provider.dart';
 import 'package:moviestar/theme/app_theme.dart';
+import 'package:moviestar/utils/is_text_file.dart';
 
 /// The main file service widget that provides file upload, download, and preview functionality.
 ///
@@ -185,12 +187,44 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                                 key: _browserKey,
                                 browserKey: _browserKey,
                                 friendlyFolderName: friendlyFolderName,
-                                onFileSelected: (name, filePath) {
+                                onFileSelected: (name, filePath) async {
                                   setState(() {});
-                                  ref.read(fileServiceProvider.notifier)
-                                    ..setDownloadFile(filePath)
-                                    ..setFilePreview(name)
-                                    ..setRemoteFileName(path.basename(name));
+
+                                  try {
+                                    // Read file content for preview.
+
+                                    final content = await readPod(
+                                      filePath,
+                                      context,
+                                      Container(),
+                                    );
+                                    String preview;
+
+                                    if (isTextFile(name)) {
+                                      // For text files, show the first 500 characters.
+
+                                      preview =
+                                          content.length > 500
+                                              ? '${content.substring(0, 500)}...'
+                                              : content;
+                                    } else {
+                                      // For binary files, show basic info.
+
+                                      preview =
+                                          'Binary file\nSize: ${(content.length / 1024).toStringAsFixed(2)} KB\nType: ${path.extension(name)}';
+                                    }
+
+                                    ref.read(fileServiceProvider.notifier)
+                                      ..setDownloadFile(filePath)
+                                      ..setFilePreview(preview)
+                                      ..setRemoteFileName(path.basename(name));
+                                  } catch (e) {
+                                    debugPrint('Preview error: $e');
+                                    ref.read(fileServiceProvider.notifier)
+                                      ..setDownloadFile(filePath)
+                                      ..setFilePreview('Error loading preview')
+                                      ..setRemoteFileName(path.basename(name));
+                                  }
                                 },
                                 onFileDownload: (name, filePath) async {
                                   ref.read(fileServiceProvider.notifier)
@@ -318,12 +352,44 @@ class _FileServiceWidgetState extends ConsumerState<FileServiceWidget> {
                               key: _browserKey,
                               browserKey: _browserKey,
                               friendlyFolderName: friendlyFolderName,
-                              onFileSelected: (name, filePath) {
+                              onFileSelected: (name, filePath) async {
                                 setState(() {});
-                                ref.read(fileServiceProvider.notifier)
-                                  ..setDownloadFile(filePath)
-                                  ..setFilePreview(name)
-                                  ..setRemoteFileName(path.basename(name));
+
+                                try {
+                                  // Read file content for preview.
+
+                                  final content = await readPod(
+                                    filePath,
+                                    context,
+                                    Container(),
+                                  );
+                                  String preview;
+
+                                  if (isTextFile(name)) {
+                                    // For text files, show the first 500 characters.
+
+                                    preview =
+                                        content.length > 500
+                                            ? '${content.substring(0, 500)}...'
+                                            : content;
+                                  } else {
+                                    // For binary files, show basic info.
+
+                                    preview =
+                                        'Binary file\nSize: ${(content.length / 1024).toStringAsFixed(2)} KB\nType: ${path.extension(name)}';
+                                  }
+
+                                  ref.read(fileServiceProvider.notifier)
+                                    ..setDownloadFile(filePath)
+                                    ..setFilePreview(preview)
+                                    ..setRemoteFileName(path.basename(name));
+                                } catch (e) {
+                                  debugPrint('Preview error: $e');
+                                  ref.read(fileServiceProvider.notifier)
+                                    ..setDownloadFile(filePath)
+                                    ..setFilePreview('Error loading preview')
+                                    ..setRemoteFileName(path.basename(name));
+                                }
                               },
                               onFileDownload: (name, filePath) async {
                                 ref.read(fileServiceProvider.notifier)
