@@ -39,8 +39,22 @@ doc/api/
 # Mac
 .DS_Store
 
-# Platform directories
+# macOS folder and all its contents
 macos/
+macos/.gitignore
+macos/Flutter/
+macos/Flutter/Flutter-Debug.xcconfig
+macos/Flutter/Flutter-Release.xcconfig
+macos/Flutter/Podfile
+macos/Flutter/Podfile.lock
+macos/Runner.xcodeproj/
+macos/Runner.xcodeproj/project.pbxproj
+macos/Runner.xcworkspace/
+macos/Runner.xcworkspace/contents.xcworkspacedata
+macos/Runner/
+macos/Runner/DebugProfile.entitlements
+macos/Runner/Release.entitlements
+
 # macOS specific files
 *.mode1v3
 *.mode2v3
