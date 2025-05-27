@@ -28,7 +28,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviestar/screens/coming_soon_screen.dart';
 import 'package:moviestar/screens/downloads_screen.dart';
 import 'package:moviestar/screens/home_screen.dart';
-import 'package:moviestar/screens/profile_screen.dart';
+import 'package:moviestar/screens/settings_screen.dart';
+import 'package:moviestar/services/api_key_service.dart';
+import 'package:moviestar/services/movie_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
 import 'package:moviestar/services/favorites_service.dart';
@@ -100,6 +102,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Service for managing favorite movies.
   late final FavoritesService _favoritesService;
+  late final ApiKeyService _apiKeyService;
+  late final MovieService _movieService;
 
   /// List of screens to display in the bottom navigation bar.
   late final List<Widget> _screens;
@@ -108,11 +112,46 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _favoritesService = FavoritesService(widget.prefs);
+    _apiKeyService = ApiKeyService(widget.prefs);
+    _movieService = MovieService(_apiKeyService);
+
+    // Listen for API key changes
+    _apiKeyService.addListener(_onApiKeyChanged);
+
+    _buildScreens();
+  }
+
+  @override
+  void dispose() {
+    _apiKeyService.removeListener(_onApiKeyChanged);
+    super.dispose();
+  }
+
+  void _onApiKeyChanged() {
+    // When API key changes, update the movie service
+    _movieService.updateApiKey();
+
+    // Force a rebuild of the current screen
+    setState(() {
+      // No need to rebuild screens, just trigger a rebuild
+    });
+  }
+
+  void _buildScreens() {
     _screens = [
-      HomeScreen(favoritesService: _favoritesService),
-      ComingSoonScreen(favoritesService: _favoritesService),
+      HomeScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
+      ComingSoonScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
       const DownloadsScreen(),
-      ProfileScreen(favoritesService: _favoritesService),
+      SettingsScreen(
+        favoritesService: _favoritesService,
+        apiKeyService: _apiKeyService,
+      ),
     ];
   }
 
@@ -138,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.download),
             label: 'Downloads',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
         ],
       ),
     );

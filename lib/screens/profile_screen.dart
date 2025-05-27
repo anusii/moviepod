@@ -1,4 +1,4 @@
-/// Screen for managing user profile settings and preferences.
+/// Screen for managing user settings and preferences.
 ///
 // Time-stamp: <Thursday 2025-04-10 11:47:48 +1000 Graham Williams>
 ///
@@ -27,20 +27,20 @@ import 'package:flutter/material.dart';
 import '../services/favorites_service.dart';
 import 'my_list_screen.dart';
 
-/// A screen that displays and manages user profile settings.
-class ProfileScreen extends StatefulWidget {
+/// A screen that displays and manages user settings.
+class SettingsScreen extends StatefulWidget {
   /// Service for managing favorite movies.
   final FavoritesService favoritesService;
 
-  /// Creates a new [ProfileScreen] widget.
-  const ProfileScreen({super.key, required this.favoritesService});
+  /// Creates a new [SettingsScreen] widget.
+  const SettingsScreen({super.key, required this.favoritesService});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-/// State class for the profile screen.
-class _ProfileScreenState extends State<ProfileScreen> {
+/// State class for the settings screen.
+class _SettingsScreenState extends State<SettingsScreen> {
   /// Whether notifications are enabled.
   bool _notificationsEnabled = true;
 
@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Profile', style: TextStyle(color: Colors.white)),
+        title: const Text('Settings', style: TextStyle(color: Colors.white)),
       ),
       body: ListView(
         children: [
