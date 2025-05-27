@@ -131,16 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // When API key changes, update the movie service
     _movieService.updateApiKey();
 
-    // Rebuild screens to ensure they have the latest data
+    // Force a rebuild of the current screen
     setState(() {
-      _buildScreens();
+      // No need to rebuild screens, just trigger a rebuild
     });
-
-    // If we're on the home screen, make sure it reloads
-    if (_selectedIndex == 0) {
-      // Force refresh by rebuilding
-      setState(() {});
-    }
   }
 
   void _buildScreens() {
