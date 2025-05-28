@@ -120,8 +120,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               background: CachedNetworkImage(
                 imageUrl: widget.movie.backdropUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
+                placeholder:
+                    (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -155,9 +156,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInToWatch ? Colors.blue : Colors.white,
                             ),
                             onPressed: _toggleToWatch,
-                            tooltip: _isInToWatch
-                                ? 'Remove from To Watch'
-                                : 'Add to To Watch',
+                            tooltip:
+                                _isInToWatch
+                                    ? 'Remove from To Watch'
+                                    : 'Add to To Watch',
                           ),
                           IconButton(
                             icon: Icon(
@@ -167,9 +169,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInWatched ? Colors.green : Colors.white,
                             ),
                             onPressed: _toggleWatched,
-                            tooltip: _isInWatched
-                                ? 'Remove from Watched'
-                                : 'Add to Watched',
+                            tooltip:
+                                _isInWatched
+                                    ? 'Remove from Watched'
+                                    : 'Add to Watched',
                           ),
                         ],
                       ),

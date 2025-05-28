@@ -20,11 +20,11 @@ class MovieService {
   /// Creates a new MovieService instance.
 
   MovieService(ApiKeyService apiKeyService)
-      : _client = NetworkClient(
-          baseUrl: _baseUrl,
-          apiKey: apiKeyService.getApiKey() ?? '',
-        ),
-        _apiKeyService = apiKeyService;
+    : _client = NetworkClient(
+        baseUrl: _baseUrl,
+        apiKey: apiKeyService.getApiKey() ?? '',
+      ),
+      _apiKeyService = apiKeyService;
 
   /// Updates the API key and recreates the network client.
 
