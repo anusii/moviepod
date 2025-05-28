@@ -30,14 +30,18 @@ import '../services/favorites_service.dart';
 import '../utils/date_format_util.dart';
 
 /// A screen that displays detailed information about a selected movie.
+
 class MovieDetailsScreen extends StatefulWidget {
   /// The movie to display details for.
+
   final Movie movie;
 
   /// Service for managing favorite movies.
+
   final FavoritesService favoritesService;
 
   /// Creates a new [MovieDetailsScreen] widget.
+
   const MovieDetailsScreen({
     super.key,
     required this.movie,
@@ -49,33 +53,56 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 /// State class for the movie details screen.
+
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  /// Indicates whether the movie is in the user's favorites.
-  bool _isFavorite = false;
+  /// Indicates whether the movie is in the to-watch list.
+
+  bool _isInToWatch = false;
+
+  /// Indicates whether the movie is in the watched list.
+
+  bool _isInWatched = false;
 
   @override
   void initState() {
     super.initState();
-    _checkFavoriteStatus();
+    _checkListStatus();
   }
 
-  /// Checks if the current movie is in the user's favorites.
-  Future<void> _checkFavoriteStatus() async {
-    final isFavorite = await widget.favoritesService.isFavorite(widget.movie);
+  /// Checks if the current movie is in either list.
+
+  Future<void> _checkListStatus() async {
+    final isInToWatch = await widget.favoritesService.isInToWatch(widget.movie);
+    final isInWatched = await widget.favoritesService.isInWatched(widget.movie);
     setState(() {
-      _isFavorite = isFavorite;
+      _isInToWatch = isInToWatch;
+      _isInWatched = isInWatched;
     });
   }
 
-  /// Toggles the favorite status of the current movie.
-  Future<void> _toggleFavorite() async {
-    if (_isFavorite) {
-      await widget.favoritesService.removeFromFavorites(widget.movie);
+  /// Toggles the to-watch status of the current movie.
+
+  Future<void> _toggleToWatch() async {
+    if (_isInToWatch) {
+      await widget.favoritesService.removeFromToWatch(widget.movie);
     } else {
-      await widget.favoritesService.addToFavorites(widget.movie);
+      await widget.favoritesService.addToWatch(widget.movie);
     }
     setState(() {
-      _isFavorite = !_isFavorite;
+      _isInToWatch = !_isInToWatch;
+    });
+  }
+
+  /// Toggles the watched status of the current movie.
+
+  Future<void> _toggleWatched() async {
+    if (_isInWatched) {
+      await widget.favoritesService.removeFromWatched(widget.movie);
+    } else {
+      await widget.favoritesService.addToWatched(widget.movie);
+    }
+    setState(() {
+      _isInWatched = !_isInWatched;
     });
   }
 
@@ -93,9 +120,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               background: CachedNetworkImage(
                 imageUrl: widget.movie.backdropUrl,
                 fit: BoxFit.cover,
-                placeholder:
-                    (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -119,12 +145,33 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: _isFavorite ? Colors.red : Colors.white,
-                        ),
-                        onPressed: _toggleFavorite,
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              _isInToWatch
+                                  ? Icons.bookmark
+                                  : Icons.bookmark_border,
+                              color: _isInToWatch ? Colors.blue : Colors.white,
+                            ),
+                            onPressed: _toggleToWatch,
+                            tooltip: _isInToWatch
+                                ? 'Remove from To Watch'
+                                : 'Add to To Watch',
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              _isInWatched
+                                  ? Icons.check_circle
+                                  : Icons.check_circle_outline,
+                              color: _isInWatched ? Colors.green : Colors.white,
+                            ),
+                            onPressed: _toggleWatched,
+                            tooltip: _isInWatched
+                                ? 'Remove from Watched'
+                                : 'Add to Watched',
+                          ),
+                        ],
                       ),
                     ],
                   ),
