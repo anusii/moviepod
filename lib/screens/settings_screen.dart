@@ -24,9 +24,11 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+
 import 'package:url_launcher/url_launcher.dart';
-import '../services/favorites_service.dart';
+
 import '../services/api_key_service.dart';
+import '../services/favorites_service.dart';
 import 'to_watch_screen.dart';
 import 'watched_screen.dart';
 

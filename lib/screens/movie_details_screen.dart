@@ -24,7 +24,9 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
+
 import '../models/movie.dart';
 import '../services/favorites_service.dart';
 import '../utils/date_format_util.dart';

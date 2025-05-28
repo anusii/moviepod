@@ -1,5 +1,6 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiKeyService extends ChangeNotifier {
   static const String _apiKeyPrefsKey = 'movie_db_api_key';

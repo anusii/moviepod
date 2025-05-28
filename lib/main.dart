@@ -24,16 +24,18 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:moviestar/screens/coming_soon_screen.dart';
 import 'package:moviestar/screens/downloads_screen.dart';
 import 'package:moviestar/screens/home_screen.dart';
 import 'package:moviestar/screens/settings_screen.dart';
 import 'package:moviestar/services/api_key_service.dart';
-import 'package:moviestar/services/movie_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:moviestar/utils/create_solid_login.dart';
 import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/services/movie_service.dart';
+import 'package:moviestar/utils/create_solid_login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

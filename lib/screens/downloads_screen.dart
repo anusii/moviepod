@@ -24,6 +24,7 @@
 /// Authors: Kevin Wang
 
 import 'package:flutter/material.dart';
+
 import '../models/movie.dart';
 
 // A screen that displays and manages downloaded movies.
