@@ -257,8 +257,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               value: _personalRating ?? 0,
                               min: 0,
                               max: 10,
-                              divisions: 10,
-                              label: _personalRating?.toStringAsFixed(1) ?? '0',
+                              divisions: 100,
+                              label:
+                                  _personalRating?.toStringAsFixed(1) ?? '0.0',
                               onChanged: (value) => _updateRating(value),
                             ),
                           ),
