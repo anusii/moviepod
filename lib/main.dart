@@ -42,11 +42,14 @@ void main() async {
 }
 
 /// The root widget of the Movie Star application.
+
 class MyApp extends StatelessWidget {
   /// Shared preferences instance for storing app data.
+
   final SharedPreferences prefs;
 
   /// Creates a new [MyApp] widget.
+
   const MyApp({super.key, required this.prefs});
 
   @override
@@ -55,18 +58,18 @@ class MyApp extends StatelessWidget {
       title: 'Movie Star',
       theme: ThemeData(
         // This is the theme of your application.
-        //
+
         // TRY THIS: Try running your application with "flutter run". You'll see
         // the application has a purple toolbar. Then, without quitting the app,
         // try changing the seedColor in the colorScheme below to Colors.green
         // and then invoke "hot reload" (save your changes or press the "hot
         // reload" button in a Flutter-supported IDE, or press "r" if you used
         // the command line to start the app).
-        //
+
         // Notice that the counter didn't reset back to zero; the application
         // state is not lost during the reload. To reset the state, use hot
         // restart instead.
-        //
+
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -96,16 +99,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 /// State class for the main screen.
+
 class _MyHomePageState extends State<MyHomePage> {
   /// Index of the currently selected screen.
+
   int _selectedIndex = 0;
 
   /// Service for managing favorite movies.
+
   late final FavoritesService _favoritesService;
   late final ApiKeyService _apiKeyService;
   late final MovieService _movieService;
 
   /// List of screens to display in the bottom navigation bar.
+
   late final List<Widget> _screens;
 
   @override
@@ -115,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _apiKeyService = ApiKeyService(widget.prefs);
     _movieService = MovieService(_apiKeyService);
 
-    // Listen for API key changes
+    // Listen for API key changes.
+
     _apiKeyService.addListener(_onApiKeyChanged);
 
     _buildScreens();
@@ -128,13 +136,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onApiKeyChanged() {
-    // When API key changes, update the movie service
+    // When API key changes, update the movie service.
+
     _movieService.updateApiKey();
 
-    // Force a rebuild of the current screen
+    // Rebuild screens to ensure they have the latest data.
+
     setState(() {
-      // No need to rebuild screens, just trigger a rebuild
+      _buildScreens();
     });
+
+    // If we're on the home screen, make sure it reloads.
+
+    if (_selectedIndex == 0) {
+      // Force refresh by rebuilding.
+
+      setState(() {});
+    }
   }
 
   void _buildScreens() {
@@ -185,8 +203,10 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 /// A placeholder home page widget.
+
 class HomePage extends StatelessWidget {
   /// Creates a new [HomePage] widget.
+
   const HomePage({super.key});
 
   @override

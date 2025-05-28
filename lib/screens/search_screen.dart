@@ -31,12 +31,15 @@ import '../services/favorites_service.dart';
 import 'movie_details_screen.dart';
 
 /// A screen that allows users to search for movies.
+
 class SearchScreen extends StatefulWidget {
   /// Service for managing favorite movies.
+
   final FavoritesService favoritesService;
   final MovieService movieService;
 
   /// Creates a new [SearchScreen] widget.
+
   const SearchScreen({
     super.key,
     required this.favoritesService,
@@ -48,17 +51,22 @@ class SearchScreen extends StatefulWidget {
 }
 
 /// State class for the search screen.
+
 class _SearchScreenState extends State<SearchScreen> {
   /// Controller for the search text field.
+
   final TextEditingController _searchController = TextEditingController();
 
   /// Loading state indicator.
+
   bool _isLoading = false;
 
   /// Error message if any.
+
   String? _error;
 
   /// List of movies matching the search query.
+
   List<Movie> _searchResults = [];
 
   @override
@@ -68,6 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   /// Searches for movies based on the provided query.
+
   Future<void> _searchMovies(String query) async {
     if (query.isEmpty) {
       setState(() {
@@ -111,61 +120,58 @@ class _SearchScreenState extends State<SearchScreen> {
           onSubmitted: _searchMovies,
         ),
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _error != null
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
               ? Center(child: Text(_error!))
               : _searchResults.isEmpty
-              ? const Center(
-                child: Text(
-                  'Search for movies to get started',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              )
-              : ListView.builder(
-                itemCount: _searchResults.length,
-                itemBuilder: (context, index) {
-                  final movie = _searchResults[index];
-                  return ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: CachedNetworkImage(
-                        imageUrl: movie.posterUrl,
-                        width: 50,
-                        height: 75,
-                        fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                        errorWidget:
-                            (context, url, error) => const Icon(Icons.error),
+                  ? const Center(
+                      child: Text(
+                        'Search for movies to get started',
+                        style: TextStyle(color: Colors.grey),
                       ),
-                    ),
-                    title: Text(
-                      movie.title,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      '⭐ ${movie.voteAverage.toStringAsFixed(1)}',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => MovieDetailsScreen(
-                                movie: movie,
-                                favoritesService: widget.favoritesService,
+                    )
+                  : ListView.builder(
+                      itemCount: _searchResults.length,
+                      itemBuilder: (context, index) {
+                        final movie = _searchResults[index];
+                        return ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: CachedNetworkImage(
+                              imageUrl: movie.posterUrl,
+                              width: 50,
+                              height: 75,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
                               ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                          title: Text(
+                            movie.title,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            '⭐ ${movie.voteAverage.toStringAsFixed(1)}',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailsScreen(
+                                  movie: movie,
+                                  favoritesService: widget.favoritesService,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
     );
   }
 }
