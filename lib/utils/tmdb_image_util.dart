@@ -65,6 +65,7 @@ class TmdbImageUtil {
   static String getPosterUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
     // Remove any existing size prefixes.
+
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${posterSizes[size] ?? posterSizes['w185']!}$cleanPath';
   }
@@ -74,6 +75,7 @@ class TmdbImageUtil {
   static String getBackdropUrl(String path, {String size = 'w780'}) {
     if (path.isEmpty) return '';
     // Remove any existing size prefixes.
+
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${backdropSizes[size] ?? backdropSizes['w780']!}$cleanPath';
   }
@@ -83,6 +85,7 @@ class TmdbImageUtil {
   static String getProfileUrl(String path, {String size = 'w185'}) {
     if (path.isEmpty) return '';
     // Remove any existing size prefixes.
+
     final cleanPath = path.replaceAll(RegExp(r'/[a-z0-9]+/'), '');
     return '$_baseUrl/${profileSizes[size] ?? profileSizes['w185']!}$cleanPath';
   }
@@ -95,6 +98,7 @@ class TmdbImageUtil {
     final pathSegments = uri.pathSegments;
     if (pathSegments.length < 2) return '';
     // Return only the last segment (the actual file path).
+
     return '/${pathSegments.last}';
   }
 }
