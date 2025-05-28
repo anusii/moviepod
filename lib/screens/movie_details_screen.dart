@@ -63,10 +63,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   bool _isInWatched = false;
 
+  /// Personal rating for the movie.
+
+  double? _personalRating;
+
+  /// Indicates whether the personal rating is being loaded.
+
+  bool _isLoadingRating = true;
+
   @override
   void initState() {
     super.initState();
     _checkListStatus();
+    _loadPersonalRating();
   }
 
   /// Checks if the current movie is in either list.
@@ -106,6 +115,27 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     });
   }
 
+  Future<void> _loadPersonalRating() async {
+    final rating = await widget.favoritesService.getPersonalRating(
+      widget.movie,
+    );
+    setState(() {
+      _personalRating = rating;
+      _isLoadingRating = false;
+    });
+  }
+
+  Future<void> _updateRating(double? rating) async {
+    if (rating == null) {
+      await widget.favoritesService.removePersonalRating(widget.movie);
+    } else {
+      await widget.favoritesService.setPersonalRating(widget.movie, rating);
+    }
+    setState(() {
+      _personalRating = rating;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,8 +150,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               background: CachedNetworkImage(
                 imageUrl: widget.movie.backdropUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
+                placeholder:
+                    (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -155,9 +186,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInToWatch ? Colors.blue : Colors.white,
                             ),
                             onPressed: _toggleToWatch,
-                            tooltip: _isInToWatch
-                                ? 'Remove from To Watch'
-                                : 'Add to To Watch',
+                            tooltip:
+                                _isInToWatch
+                                    ? 'Remove from To Watch'
+                                    : 'Add to To Watch',
                           ),
                           IconButton(
                             icon: Icon(
@@ -167,9 +199,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               color: _isInWatched ? Colors.green : Colors.white,
                             ),
                             onPressed: _toggleWatched,
-                            tooltip: _isInWatched
-                                ? 'Remove from Watched'
-                                : 'Add to Watched',
+                            tooltip:
+                                _isInWatched
+                                    ? 'Remove from Watched'
+                                    : 'Add to Watched',
                           ),
                         ],
                       ),
@@ -202,6 +235,49 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Personal Rating Section,
+                  const Text(
+                    'Your Rating',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _isLoadingRating
+                      ? const Center(child: CircularProgressIndicator())
+                      : Row(
+                        children: [
+                          Expanded(
+                            child: Slider(
+                              value: _personalRating ?? 0,
+                              min: 0,
+                              max: 10,
+                              divisions: 100,
+                              label:
+                                  _personalRating?.toStringAsFixed(1) ?? '0.0',
+                              onChanged: (value) => _updateRating(value),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.clear, color: Colors.white),
+                            onPressed:
+                                _personalRating == null
+                                    ? null
+                                    : () => _updateRating(null),
+                            tooltip: 'Clear rating',
+                          ),
+                        ],
+                      ),
+                  Text(
+                    _personalRating == null
+                        ? 'No rating yet'
+                        : 'Your rating: ${_personalRating!.toStringAsFixed(1)}/10',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   const SizedBox(height: 16),
                   const Text(
