@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -186,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.2),
+                            color: Colors.red.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text(
@@ -237,6 +239,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       await widget.apiKeyService.setApiKey(
                         _apiKeyController.text,
                       );
+
+                      if (!context.mounted) return;
 
                       if (mounted) {
                         // Show success message.

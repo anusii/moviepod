@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'dart:convert';
 
 import 'package:rxdart/rxdart.dart';

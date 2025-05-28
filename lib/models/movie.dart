@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import '../utils/tmdb_image_util.dart';
 
 /// A class representing a movie with its details.
