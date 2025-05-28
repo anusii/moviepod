@@ -40,9 +40,11 @@ class FavoritesService {
   static const String _watchedKey = 'watched';
 
   /// Key used to store favorites in shared preferences.
+
   static const String _favoritesKey = 'favorites';
 
   /// Key used to store ratings in shared preferences.
+
   static const String _ratingsKey = 'ratings';
 
   /// Shared preferences instance for storing movie lists.
@@ -169,6 +171,7 @@ class FavoritesService {
   }
 
   /// Gets the user's personal rating for a movie.
+
   Future<double?> getPersonalRating(Movie movie) async {
     final ratingsJson = _prefs.getString(_ratingsKey);
     if (ratingsJson == null) return null;
@@ -178,6 +181,7 @@ class FavoritesService {
   }
 
   /// Sets the user's personal rating for a movie.
+
   Future<void> setPersonalRating(Movie movie, double rating) async {
     final ratingsJson = _prefs.getString(_ratingsKey);
     Map<String, dynamic> ratings = {};
@@ -191,6 +195,7 @@ class FavoritesService {
   }
 
   /// Removes the user's personal rating for a movie.
+
   Future<void> removePersonalRating(Movie movie) async {
     final ratingsJson = _prefs.getString(_ratingsKey);
     if (ratingsJson == null) return;
