@@ -38,6 +38,10 @@ import 'package:moviestar/services/api_key_service.dart';
 import 'package:moviestar/services/favorites_service.dart';
 import 'package:moviestar/services/movie_service.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
+import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/features/file/service/page.dart';
+import 'package:moviestar/utils/initialise_app_folders.dart';
+import 'package:moviestar/utils/is_logged_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,8 +51,10 @@ void main() async {
 
 /// The root widget of the Movie Star application.
 
+
 class MyApp extends StatelessWidget {
   /// Shared preferences instance for storing app data.
+
 
   final SharedPreferences prefs;
 
@@ -108,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Index of the currently selected screen.
 
   int _selectedIndex = 0;
+  bool _isLoadingFolders = false;
 
   /// Service for managing favorite movies.
 
@@ -170,17 +177,58 @@ class _MyHomePageState extends State<MyHomePage> {
         movieService: _movieService,
       ),
       const DownloadsScreen(),
+      const FileService(),
       SettingsScreen(
         favoritesService: _favoritesService,
         apiKeyService: _apiKeyService,
       ),
     ];
+    _initialiseAppData();
+  }
+
+  Future<void> _initialiseAppData() async {
+    final loggedIn = await isLoggedIn();
+    if (loggedIn) {
+      if (mounted) {
+        setState(() {
+          _isLoadingFolders = true;
+        });
+        await initialiseAppFolders(
+          context: context,
+          onProgress: (inProgress) {
+            if (mounted && !inProgress) {
+              setState(() {
+                _isLoadingFolders = false;
+              });
+            }
+          },
+          onComplete: () {
+            if (mounted) {
+              setState(() {
+                _isLoadingFolders = false;
+              });
+            }
+            debugPrint('App folders initialised.');
+          },
+        );
+        if (mounted && _isLoadingFolders) {
+          setState(() {
+            _isLoadingFolders = false;
+          });
+        }
+      }
+    } else {
+      debugPrint('User not logged in. Skipping App folder initialisation.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body:
+          _isLoadingFolders
+              ? const Center(child: CircularProgressIndicator())
+              : _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -199,6 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.download),
             label: 'Downloads',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Files'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
         ],
       ),
