@@ -93,22 +93,21 @@ Future<SolidFunctionCallStatus> createAppFolder({
     if (result == SolidFunctionCallStatus.success && createInitFile) {
       String initContent;
 
-      // Initialisation content for all folders.
+      // Initialisation content for all folders in Turtle format.
 
       initContent = '''
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-          {
-            "folder": "$folderName",
-            "created": "${DateTime.now().toIso8601String()}",
-            "version": "1.0"
-          }
-
-          ''';
+:folder "${folderName}" ;
+        :created "${DateTime.now().toIso8601String()}"^^xsd:dateTime ;
+        :version "1.0" .
+''';
 
       if (!context.mounted) return result;
 
       final initResult = await writePod(
-        '$folderName/init.json',
+        '$folderName/init.ttl',
         initContent,
         context,
         const Text('Creating initialization file'),
