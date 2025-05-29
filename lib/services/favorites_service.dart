@@ -23,10 +23,14 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:rxdart/rxdart.dart';
-import '../models/movie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:moviestar/models/movie.dart';
 
 /// A service class that manages the user's movie lists.
 
@@ -38,10 +42,6 @@ class FavoritesService {
   /// Key used to store watched movies in shared preferences.
 
   static const String _watchedKey = 'watched';
-
-  /// Key used to store favorites in shared preferences.
-
-  static const String _favoritesKey = 'favorites';
 
   /// Key used to store ratings in shared preferences.
 

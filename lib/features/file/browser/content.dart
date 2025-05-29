@@ -111,7 +111,6 @@ class FileBrowserContent extends StatelessWidget {
                 padding: const EdgeInsets.all(AppTheme.defaultPadding / 2),
                 children: [
                   // Directory list.
-                  
                   DirectoryList(
                     directories: directories,
                     directoryCounts: directoryCounts,
@@ -119,7 +118,6 @@ class FileBrowserContent extends StatelessWidget {
                   ),
 
                   // Add visual separator if both directories and files exist.
-                  
                   if (directories.isNotEmpty && files.isNotEmpty)
                     const Divider(
                       height: 24,
@@ -127,7 +125,6 @@ class FileBrowserContent extends StatelessWidget {
                     ),
 
                   // File list.
-                  
                   FileList(
                     files: files,
                     currentPath: currentPath,

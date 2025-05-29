@@ -99,7 +99,7 @@ Future<SolidFunctionCallStatus> createAppFolder({
 @prefix : <#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:folder "${folderName}" ;
+:folder "$folderName" ;
         :created "${DateTime.now().toIso8601String()}"^^xsd:dateTime ;
         :version "1.0" .
 ''';

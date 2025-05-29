@@ -23,11 +23,15 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/movie.dart';
-import '../services/favorites_service.dart';
-import 'movie_details_screen.dart';
+
+import 'package:moviestar/models/movie.dart';
+import 'package:moviestar/screens/movie_details_screen.dart';
+import 'package:moviestar/services/favorites_service.dart';
 
 /// A screen that displays the user's list of movies to watch.
 
@@ -94,10 +98,11 @@ class _ToWatchScreenState extends State<ToWatchScreen> {
                     width: 50,
                     height: 75,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                    placeholder:
+                        (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                    errorWidget:
+                        (context, url, error) => const Icon(Icons.error),
                   ),
                 ),
                 title: Text(
@@ -121,10 +126,11 @@ class _ToWatchScreenState extends State<ToWatchScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MovieDetailsScreen(
-                        movie: movie,
-                        favoritesService: widget.favoritesService,
-                      ),
+                      builder:
+                          (context) => MovieDetailsScreen(
+                            movie: movie,
+                            favoritesService: widget.favoritesService,
+                          ),
                     ),
                   );
                 },
