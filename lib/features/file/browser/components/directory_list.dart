@@ -69,7 +69,6 @@ class DirectoryList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section header for directories.
-
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
@@ -83,14 +82,12 @@ class DirectoryList extends StatelessWidget {
         ),
 
         // List of directory items.
-
         ...directories.map(
           (dir) => ListTile(
             leading: const Icon(Icons.folder, color: AppTheme.primaryColor),
             title: Row(
               children: [
                 // Directory name with overflow protection.
-
                 Expanded(
                   child: Text(
                     dir,
@@ -103,7 +100,6 @@ class DirectoryList extends StatelessWidget {
                 ),
 
                 // File count badge.
-                
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,

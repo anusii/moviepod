@@ -43,10 +43,6 @@ class FavoritesService {
 
   static const String _watchedKey = 'watched';
 
-  /// Key used to store favorites in shared preferences.
-
-  static const String _favoritesKey = 'favorites';
-
   /// Key used to store ratings in shared preferences.
 
   static const String _ratingsKey = 'ratings';
