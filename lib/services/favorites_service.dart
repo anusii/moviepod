@@ -30,7 +30,7 @@ import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/movie.dart';
+import 'package:moviestar/models/movie.dart';
 
 /// A service class that manages the user's movie lists.
 

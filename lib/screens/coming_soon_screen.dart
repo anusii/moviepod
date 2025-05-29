@@ -29,11 +29,11 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../models/movie.dart';
-import '../services/favorites_service.dart';
-import '../services/movie_service.dart';
-import '../utils/date_format_util.dart';
-import 'movie_details_screen.dart';
+import 'package:moviestar/models/movie.dart';
+import 'package:moviestar/screens/movie_details_screen.dart';
+import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/services/movie_service.dart';
+import 'package:moviestar/utils/date_format_util.dart';
 
 // A screen that displays upcoming movies and their release dates.
 

@@ -28,10 +28,10 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:moviestar/constants/paths.dart';
 import 'package:path/path.dart' as path;
 import 'package:solidpod/solidpod.dart';
 
+import 'package:moviestar/constants/paths.dart';
 import 'package:moviestar/features/file/browser/page.dart';
 import 'package:moviestar/features/file/service/components/file_upload_section.dart';
 import 'package:moviestar/features/file/service/providers/file_service_provider.dart';

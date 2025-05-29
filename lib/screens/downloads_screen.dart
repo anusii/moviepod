@@ -27,7 +27,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../models/movie.dart';
+import 'package:moviestar/models/movie.dart';
 
 // A screen that displays and manages downloaded movies.
 

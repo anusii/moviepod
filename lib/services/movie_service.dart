@@ -25,9 +25,9 @@
 
 library;
 
-import '../models/movie.dart';
-import '../utils/network_client.dart';
-import 'api_key_service.dart';
+import 'package:moviestar/models/movie.dart';
+import 'package:moviestar/services/api_key_service.dart';
+import 'package:moviestar/utils/network_client.dart';
 
 /// A service class that handles movie-related API requests.
 
