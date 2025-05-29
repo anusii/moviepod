@@ -207,17 +207,20 @@ class FavoritesService extends ChangeNotifier {
   }
 
   /// Gets the personal comments for a movie.
+
   Future<String?> getMovieComments(Movie movie) async {
     return _prefs.getString('movie_comments_${movie.id}');
   }
 
   /// Sets the personal comments for a movie.
+
   Future<void> setMovieComments(Movie movie, String comments) async {
     await _prefs.setString('movie_comments_${movie.id}', comments);
     notifyListeners();
   }
 
   /// Removes the personal comments for a movie.
+
   Future<void> removeMovieComments(Movie movie) async {
     await _prefs.remove('movie_comments_${movie.id}');
     notifyListeners();
