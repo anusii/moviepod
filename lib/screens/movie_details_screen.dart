@@ -72,12 +72,15 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   bool _isLoadingRating = true;
 
   /// Personal comments for the movie.
+
   String? _personalComments;
 
   /// Controller for the comments text field.
+
   final TextEditingController _commentsController = TextEditingController();
 
   /// Indicates whether the comments are being loaded.
+
   bool _isLoadingComments = true;
 
   @override
