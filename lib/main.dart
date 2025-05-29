@@ -28,7 +28,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moviestar/screens/coming_soon_screen.dart';
 import 'package:moviestar/screens/downloads_screen.dart';
 import 'package:moviestar/screens/home_screen.dart';
-import 'package:moviestar/screens/profile_screen.dart';
+import 'package:moviestar/screens/settings_screen.dart';
+import 'package:moviestar/services/api_key_service.dart';
+import 'package:moviestar/services/movie_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
 import 'package:moviestar/services/favorites_service.dart';
@@ -44,8 +46,10 @@ void main() async {
 
 /// The root widget of the Movie Star application.
 
+
 class MyApp extends StatelessWidget {
   /// Shared preferences instance for storing app data.
+
 
   final SharedPreferences prefs;
 
@@ -59,18 +63,18 @@ class MyApp extends StatelessWidget {
       title: 'Movie Star',
       theme: ThemeData(
         // This is the theme of your application.
-        //
+
         // TRY THIS: Try running your application with "flutter run". You'll see
         // the application has a purple toolbar. Then, without quitting the app,
         // try changing the seedColor in the colorScheme below to Colors.green
         // and then invoke "hot reload" (save your changes or press the "hot
         // reload" button in a Flutter-supported IDE, or press "r" if you used
         // the command line to start the app).
-        //
+
         // Notice that the counter didn't reset back to zero; the application
         // state is not lost during the reload. To reset the state, use hot
         // restart instead.
-        //
+
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -100,27 +104,79 @@ class MyHomePage extends StatefulWidget {
 }
 
 /// State class for the main screen.
+
 class _MyHomePageState extends State<MyHomePage> {
   /// Index of the currently selected screen.
+
   int _selectedIndex = 0;
   bool _isLoadingFolders = false;
 
   /// Service for managing favorite movies.
+
   late final FavoritesService _favoritesService;
+  late final ApiKeyService _apiKeyService;
+  late final MovieService _movieService;
 
   /// List of screens to display in the bottom navigation bar.
+
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
     _favoritesService = FavoritesService(widget.prefs);
+    _apiKeyService = ApiKeyService(widget.prefs);
+    _movieService = MovieService(_apiKeyService);
+
+    // Listen for API key changes.
+
+    _apiKeyService.addListener(_onApiKeyChanged);
+
+    _buildScreens();
+  }
+
+  @override
+  void dispose() {
+    _apiKeyService.removeListener(_onApiKeyChanged);
+    super.dispose();
+  }
+
+  void _onApiKeyChanged() {
+    // When API key changes, update the movie service.
+
+    _movieService.updateApiKey();
+
+    // Rebuild screens to ensure they have the latest data.
+
+    setState(() {
+      _buildScreens();
+    });
+
+    // If we're on the home screen, make sure it reloads.
+
+    if (_selectedIndex == 0) {
+      // Force refresh by rebuilding.
+
+      setState(() {});
+    }
+  }
+
+  void _buildScreens() {
     _screens = [
-      HomeScreen(favoritesService: _favoritesService),
-      ComingSoonScreen(favoritesService: _favoritesService),
+      HomeScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
+      ComingSoonScreen(
+        favoritesService: _favoritesService,
+        movieService: _movieService,
+      ),
       const DownloadsScreen(),
       const FileService(),
-      ProfileScreen(favoritesService: _favoritesService),
+      SettingsScreen(
+        favoritesService: _favoritesService,
+        apiKeyService: _apiKeyService,
+      ),
     ];
     _initialiseAppData();
   }
@@ -187,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Downloads',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Files'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
         ],
       ),
     );
@@ -195,8 +251,10 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 /// A placeholder home page widget.
+
 class HomePage extends StatelessWidget {
   /// Creates a new [HomePage] widget.
+
   const HomePage({super.key});
 
   @override

@@ -27,14 +27,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 /// Custom exception for network-related errors.
+
 class NetworkException implements Exception {
   /// The error message.
+
   final String message;
 
   /// The HTTP status code, if applicable.
+
   final int? statusCode;
 
   /// Creates a new [NetworkException].
+
   NetworkException(this.message, {this.statusCode});
 
   @override
@@ -43,20 +47,26 @@ class NetworkException implements Exception {
 }
 
 /// A utility class for handling HTTP requests with consistent error handling and configuration.
+
 class NetworkClient {
   /// The base URL for API requests.
+
   final String baseUrl;
 
   /// The API key to be included in requests.
+
   final String apiKey;
 
   /// The HTTP client instance.
+
   final http.Client _client;
 
   /// The default timeout duration for requests.
+
   static const Duration _timeout = Duration(seconds: 10);
 
   /// Creates a new [NetworkClient].
+
   NetworkClient({
     required this.baseUrl,
     required this.apiKey,
@@ -64,6 +74,7 @@ class NetworkClient {
   }) : _client = client ?? http.Client();
 
   /// Performs a GET request and returns the parsed JSON response.
+
   Future<Map<String, dynamic>> getJson(String endpoint) async {
     try {
       final response = await _client
@@ -88,6 +99,7 @@ class NetworkClient {
   }
 
   /// Performs a GET request and returns the parsed JSON response as a list.
+
   Future<List<dynamic>> getJsonList(String endpoint) async {
     final response = await getJson(endpoint);
     if (response.containsKey('results')) {
@@ -97,6 +109,7 @@ class NetworkClient {
   }
 
   /// Closes the HTTP client.
+
   void dispose() {
     _client.close();
   }

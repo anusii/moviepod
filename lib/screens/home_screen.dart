@@ -33,50 +33,51 @@ import 'search_screen.dart';
 
 /// A screen that displays various movie categories and trending content.
 class HomeScreen extends StatefulWidget {
-  // Service for managing favorite movies.
+  /// Service for managing favorite movies.
 
   final FavoritesService favoritesService;
+  final MovieService movieService;
 
-  // Creates a new [HomeScreen] widget.
+  /// Creates a new [HomeScreen] widget.
 
-  const HomeScreen({super.key, required this.favoritesService});
+  const HomeScreen({
+    super.key,
+    required this.favoritesService,
+    required this.movieService,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// State class for the home screen.
+/// State class for the home screen.
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Service for fetching movie data.
-
-  final MovieService _movieService = MovieService();
-
-  // Loading state indicator.
+  /// Loading state indicator.
 
   bool _isLoading = true;
 
-  // Error message if any.
+  /// Error message if any.
 
   String? _error;
 
-  // List of popular movies.
+  /// List of popular movies.
 
   List<Movie> _popularMovies = [];
 
-  // List of now playing movies.
+  /// List of now playing movies.
 
   List<Movie> _nowPlayingMovies = [];
 
-  // List of top rated movies.
+  /// List of top rated movies.
 
   List<Movie> _topRatedMovies = [];
 
-  // List of upcoming movies.
+  /// List of upcoming movies.
 
   List<Movie> _upcomingMovies = [];
 
-  // Map of scroll controllers for different movie categories.
+  /// Map of scroll controllers for different movie categories.
 
   final Map<String, ScrollController> _scrollControllers = {};
 
@@ -91,6 +92,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didUpdateWidget(HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check if the movie service instance has changed or been updated.
+
+    if (oldWidget.movieService != widget.movieService) {
+      _loadAllMovies();
+    }
+  }
+
+  @override
   void dispose() {
     for (var controller in _scrollControllers.values) {
       controller.dispose();
@@ -99,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Loads all movie categories.
+
   Future<void> _loadAllMovies() async {
     setState(() {
       _isLoading = true;
@@ -106,10 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final popular = await _movieService.getPopularMovies();
-      final nowPlaying = await _movieService.getNowPlayingMovies();
-      final topRated = await _movieService.getTopRatedMovies();
-      final upcoming = await _movieService.getUpcomingMovies();
+      final popular = await widget.movieService.getPopularMovies();
+      final nowPlaying = await widget.movieService.getNowPlayingMovies();
+      final topRated = await widget.movieService.getTopRatedMovies();
+      final upcoming = await widget.movieService.getUpcomingMovies();
 
       setState(() {
         _popularMovies = popular;
@@ -127,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Builds a horizontal scrollable row of movies.
+
   Widget _buildMovieRow(String title, List<Movie> movies, String key) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,11 +176,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => MovieDetailsScreen(
-                                movie: movie,
-                                favoritesService: widget.favoritesService,
-                              ),
+                          builder: (context) => MovieDetailsScreen(
+                            movie: movie,
+                            favoritesService: widget.favoritesService,
+                          ),
                         ),
                       );
                     },
@@ -177,12 +189,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         imageUrl: movie.posterUrl,
                         width: 130,
                         fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                        errorWidget:
-                            (context, url, error) => const Icon(Icons.error),
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -216,58 +227,57 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (context) => SearchScreen(
-                        favoritesService: widget.favoritesService,
-                      ),
+                  builder: (context) => SearchScreen(
+                    favoritesService: widget.favoritesService,
+                    movieService: widget.movieService,
+                  ),
                 ),
               );
             },
           ),
         ],
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _error != null
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
               ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(_error!, style: const TextStyle(color: Colors.red)),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _loadAllMovies,
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              )
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(_error!, style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadAllMovies,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
               : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildMovieRow(
-                      'Popular on Movie Star',
-                      _popularMovies,
-                      'popular',
-                    ),
-                    _buildMovieRow(
-                      'Now Playing',
-                      _nowPlayingMovies,
-                      'nowPlaying',
-                    ),
-                    _buildMovieRow('Top Rated', _topRatedMovies, 'topRated'),
-                    _buildMovieRow('Upcoming', _upcomingMovies, 'upcoming'),
-                  ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildMovieRow(
+                        'Popular on Movie Star',
+                        _popularMovies,
+                        'popular',
+                      ),
+                      _buildMovieRow(
+                        'Now Playing',
+                        _nowPlayingMovies,
+                        'nowPlaying',
+                      ),
+                      _buildMovieRow('Top Rated', _topRatedMovies, 'topRated'),
+                      _buildMovieRow('Upcoming', _upcomingMovies, 'upcoming'),
+                    ],
+                  ),
                 ),
-              ),
     );
   }
 }
