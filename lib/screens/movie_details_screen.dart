@@ -71,11 +71,30 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   bool _isLoadingRating = true;
 
+  /// Personal comments for the movie.
+
+  String? _personalComments;
+
+  /// Controller for the comments text field.
+
+  final TextEditingController _commentsController = TextEditingController();
+
+  /// Indicates whether the comments are being loaded.
+
+  bool _isLoadingComments = true;
+
   @override
   void initState() {
     super.initState();
     _checkListStatus();
     _loadPersonalRating();
+    _loadPersonalComments();
+  }
+
+  @override
+  void dispose() {
+    _commentsController.dispose();
+    super.dispose();
   }
 
   /// Checks if the current movie is in either list.
@@ -133,6 +152,28 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     }
     setState(() {
       _personalRating = rating;
+    });
+  }
+
+  Future<void> _loadPersonalComments() async {
+    final comments = await widget.favoritesService.getMovieComments(
+      widget.movie,
+    );
+    setState(() {
+      _personalComments = comments;
+      _commentsController.text = comments ?? '';
+      _isLoadingComments = false;
+    });
+  }
+
+  Future<void> _updateComments(String? comments) async {
+    if (comments == null || comments.trim().isEmpty) {
+      await widget.favoritesService.removeMovieComments(widget.movie);
+    } else {
+      await widget.favoritesService.setMovieComments(widget.movie, comments);
+    }
+    setState(() {
+      _personalComments = comments;
     });
   }
 
@@ -279,6 +320,63 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         : 'Your rating: ${_personalRating!.toStringAsFixed(1)}/10',
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
+                  const SizedBox(height: 16),
+
+                  // Personal Comments Section
+                  const Text(
+                    'My Comments',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _isLoadingComments
+                      ? const Center(child: CircularProgressIndicator())
+                      : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: _commentsController,
+                            style: const TextStyle(color: Colors.white),
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              hintText: 'Add your thoughts about this movie...',
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[900],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            onChanged: (value) => _updateComments(value),
+                          ),
+                          const SizedBox(height: 8),
+                          if (_personalComments != null &&
+                              _personalComments!.isNotEmpty)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton.icon(
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: Colors.white,
+                                  ),
+                                  label: const Text(
+                                    'Clear Comments',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () {
+                                    _commentsController.clear();
+                                    _updateComments(null);
+                                  },
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                   const SizedBox(height: 16),
                   const Text(
                     'Overview',
