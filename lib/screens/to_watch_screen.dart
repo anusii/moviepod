@@ -27,6 +27,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/movie.dart';
 import '../services/favorites_service.dart';
+import '../widgets/sort_controls.dart';
+import '../utils/movie_sort_util.dart';
 import 'movie_details_screen.dart';
 
 /// A screen that displays the user's list of movies to watch.
@@ -47,6 +49,10 @@ class ToWatchScreen extends StatefulWidget {
 /// State class for the to watch screen.
 
 class _ToWatchScreenState extends State<ToWatchScreen> {
+  /// Currently selected sort criteria.
+
+  MovieSortCriteria _sortCriteria = MovieSortCriteria.nameAsc;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,83 +61,100 @@ class _ToWatchScreenState extends State<ToWatchScreen> {
         backgroundColor: Colors.black,
         title: const Text('To Watch', style: TextStyle(color: Colors.white)),
       ),
-      body: StreamBuilder<List<Movie>>(
-        stream: widget.favoritesService.toWatchMovies,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final movies = snapshot.data!;
-
-          if (movies.isEmpty) {
-            return const Center(
-              child: Text(
-                'Your watchlist is empty',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: movies.length,
-            itemBuilder: (context, index) {
-              final movie = movies[index];
-              return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(
-                    imageUrl: movie.posterUrl,
-                    width: 50,
-                    height: 75,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-                ),
-                title: Text(
-                  movie.title,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                subtitle: Text(
-                  '⭐ ${movie.voteAverage.toStringAsFixed(1)}',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.remove_circle_outline,
-                    color: Colors.red,
-                  ),
-                  onPressed: () {
-                    widget.favoritesService.removeFromToWatch(movie);
-                  },
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailsScreen(
-                        movie: movie,
-                        favoritesService: widget.favoritesService,
-                      ),
+      body: Column(
+        children: [
+          SortControls(
+            selectedCriteria: _sortCriteria,
+            onSortChanged: (criteria) {
+              setState(() {
+                _sortCriteria = criteria;
+              });
+            },
+          ),
+          Expanded(
+            child: StreamBuilder<List<Movie>>(
+              stream: widget.favoritesService.toWatchMovies,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.red),
                     ),
                   );
-                },
-              );
-            },
-          );
-        },
+                }
+
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final movies = sortMovies(snapshot.data!, _sortCriteria);
+
+                if (movies.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Your watchlist is empty',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: movies.length,
+                  itemBuilder: (context, index) {
+                    final movie = movies[index];
+                    return ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: CachedNetworkImage(
+                          imageUrl: movie.posterUrl,
+                          width: 50,
+                          height: 75,
+                          fit: BoxFit.cover,
+                          placeholder:
+                              (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                          errorWidget:
+                              (context, url, error) => const Icon(Icons.error),
+                        ),
+                      ),
+                      title: Text(
+                        movie.title,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Text(
+                        '⭐ ${movie.voteAverage.toStringAsFixed(1)}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(
+                          Icons.remove_circle_outline,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          widget.favoritesService.removeFromToWatch(movie);
+                        },
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => MovieDetailsScreen(
+                                  movie: movie,
+                                  favoritesService: widget.favoritesService,
+                                ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
