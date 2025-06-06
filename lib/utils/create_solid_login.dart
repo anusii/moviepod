@@ -80,7 +80,7 @@ Widget _buildNormalLogin(String serverUrl, SharedPreferences prefs) {
                 webID: serverUrl.isNotEmpty
                     ? serverUrl
                     : 'https://pods.dev.solidcommunity.au',
-                image: const AssetImage('assets/images/app_image.png'),
+                image: const AssetImage('assets/images/app_image.jpg'),
                 logo: const AssetImage('assets/images/app_icon.png'),
                 link:
                     'https://github.com/yourusername/moviestar/blob/main/README.md',
