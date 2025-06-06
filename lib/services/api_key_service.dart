@@ -8,21 +8,37 @@ class ApiKeyService extends ChangeNotifier {
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),
+    mOptions: MacOsOptions(groupId: 'com.togaware.moviestar'),
   );
 
   ApiKeyService();
 
   Future<String?> getApiKey() async {
-    return await _secureStorage.read(key: _apiKeySecureKey);
+    try {
+      return await _secureStorage.read(key: _apiKeySecureKey);
+    } catch (e) {
+      debugPrint('Error reading API key from secure storage: $e');
+      return null;
+    }
   }
 
   Future<void> setApiKey(String apiKey) async {
-    await _secureStorage.write(key: _apiKeySecureKey, value: apiKey);
-    notifyListeners();
+    try {
+      await _secureStorage.write(key: _apiKeySecureKey, value: apiKey);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error writing API key to secure storage: $e');
+      rethrow;
+    }
   }
 
   Future<void> clearApiKey() async {
-    await _secureStorage.delete(key: _apiKeySecureKey);
-    notifyListeners();
+    try {
+      await _secureStorage.delete(key: _apiKeySecureKey);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error deleting API key from secure storage: $e');
+      rethrow;
+    }
   }
 }
