@@ -30,7 +30,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:rxdart/rxdart.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moviestar/models/movie.dart';
@@ -230,7 +229,9 @@ class FavoritesService extends ChangeNotifier {
 
   /// Disposes the stream controllers.
 
+  @override
   void dispose() {
+    super.dispose();
     _toWatchController.close();
     _watchedController.close();
   }
