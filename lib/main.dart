@@ -46,10 +46,8 @@ void main() async {
 
 /// The root widget of the Movie Star application.
 
-
 class MyApp extends StatelessWidget {
   /// Shared preferences instance for storing app data.
-
 
   final SharedPreferences prefs;
 
@@ -125,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _favoritesService = FavoritesService(widget.prefs);
-    _apiKeyService = ApiKeyService(widget.prefs);
+    _apiKeyService = ApiKeyService();
     _movieService = MovieService(_apiKeyService);
 
     // Listen for API key changes.

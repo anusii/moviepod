@@ -93,9 +93,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _apiKeyController = TextEditingController(
-      text: widget.apiKeyService.getApiKey(),
-    );
+    _apiKeyController = TextEditingController();
+    _loadApiKey();
 
     // If navigated from API key prompt, scroll to the API key section and focus the field.
 
@@ -105,6 +104,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _apiKeyFocusNode.requestFocus();
       });
+    }
+  }
+
+  /// Loads the API key from secure storage.
+
+  Future<void> _loadApiKey() async {
+    final apiKey = await widget.apiKeyService.getApiKey();
+    if (mounted) {
+      _apiKeyController.text = apiKey ?? '';
     }
   }
 
@@ -126,8 +134,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          // Profile Picture.
 
+          // Profile Picture.
           Center(
             child: Stack(
               children: [
@@ -156,8 +164,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          // Settings Sections.
 
+          // Settings Sections.
           _buildSection('API Configuration', [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -180,7 +188,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (widget.fromApiKeyPrompt)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.red.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(4),
@@ -215,7 +225,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       // Launch TMDB website to get API key.
 
                       final Uri url = Uri.parse(
-                          'https://www.themoviedb.org/?language=en-AU');
+                        'https://www.themoviedb.org/?language=en-AU',
+                      );
                       _launchUrl(url);
                     },
                     child: const Text(
@@ -292,9 +303,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ToWatchScreen(
-                    favoritesService: widget.favoritesService,
-                  ),
+                  builder:
+                      (context) => ToWatchScreen(
+                        favoritesService: widget.favoritesService,
+                      ),
                 ),
               );
             }),
@@ -302,9 +314,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WatchedScreen(
-                    favoritesService: widget.favoritesService,
-                  ),
+                  builder:
+                      (context) => WatchedScreen(
+                        favoritesService: widget.favoritesService,
+                      ),
                 ),
               );
             }),
@@ -372,12 +385,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: Text(title, style: const TextStyle(color: Colors.white)),
       trailing: DropdownButton<String>(
         value: value,
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item, style: const TextStyle(color: Colors.white)),
-          );
-        }).toList(),
+        items:
+            items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item, style: const TextStyle(color: Colors.white)),
+              );
+            }).toList(),
         onChanged: onChanged,
         dropdownColor: Colors.grey[900],
         underline: const SizedBox(),
