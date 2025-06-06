@@ -23,12 +23,13 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:rxdart/rxdart.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moviestar/models/movie.dart';
@@ -43,10 +44,6 @@ class FavoritesService extends ChangeNotifier {
   /// Key used to store watched movies in shared preferences.
 
   static const String _watchedKey = 'watched';
-
-  /// Key used to store favorites in shared preferences.
-
-  static const String _favoritesKey = 'favorites';
 
   /// Key used to store ratings in shared preferences.
 
@@ -232,7 +229,9 @@ class FavoritesService extends ChangeNotifier {
 
   /// Disposes the stream controllers.
 
+  @override
   void dispose() {
+    super.dispose();
     _toWatchController.close();
     _watchedController.close();
   }

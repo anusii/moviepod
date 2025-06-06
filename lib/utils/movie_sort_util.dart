@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import '../models/movie.dart';
 import '../widgets/sort_controls.dart';
 

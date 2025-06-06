@@ -23,13 +23,17 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/movie.dart';
-import '../services/movie_service.dart';
-import '../services/favorites_service.dart';
-import 'movie_details_screen.dart';
-import 'search_screen.dart';
+
+import 'package:moviestar/models/movie.dart';
+import 'package:moviestar/screens/movie_details_screen.dart';
+import 'package:moviestar/screens/search_screen.dart';
+import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/services/movie_service.dart';
 
 /// A screen that displays various movie categories and trending content.
 class HomeScreen extends StatefulWidget {
@@ -176,10 +180,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MovieDetailsScreen(
-                            movie: movie,
-                            favoritesService: widget.favoritesService,
-                          ),
+                          builder:
+                              (context) => MovieDetailsScreen(
+                                movie: movie,
+                                favoritesService: widget.favoritesService,
+                              ),
                         ),
                       );
                     },
@@ -189,11 +194,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         imageUrl: movie.posterUrl,
                         width: 130,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                        placeholder:
+                            (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                        errorWidget:
+                            (context, url, error) => const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -227,57 +233,59 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SearchScreen(
-                    favoritesService: widget.favoritesService,
-                    movieService: widget.movieService,
-                  ),
+                  builder:
+                      (context) => SearchScreen(
+                        favoritesService: widget.favoritesService,
+                        movieService: widget.movieService,
+                      ),
                 ),
               );
             },
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.red,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(_error!, style: const TextStyle(color: Colors.red)),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadAllMovies,
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildMovieRow(
-                        'Popular on Movie Star',
-                        _popularMovies,
-                        'popular',
-                      ),
-                      _buildMovieRow(
-                        'Now Playing',
-                        _nowPlayingMovies,
-                        'nowPlaying',
-                      ),
-                      _buildMovieRow('Top Rated', _topRatedMovies, 'topRated'),
-                      _buildMovieRow('Upcoming', _upcomingMovies, 'upcoming'),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _loadAllMovies,
+                      child: const Text('Retry'),
+                    ),
+                  ],
                 ),
+              )
+              : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildMovieRow(
+                      'Popular on Movie Star',
+                      _popularMovies,
+                      'popular',
+                    ),
+                    _buildMovieRow(
+                      'Now Playing',
+                      _nowPlayingMovies,
+                      'nowPlaying',
+                    ),
+                    _buildMovieRow('Top Rated', _topRatedMovies, 'topRated'),
+                    _buildMovieRow('Upcoming', _upcomingMovies, 'upcoming'),
+                  ],
+                ),
+              ),
     );
   }
 }

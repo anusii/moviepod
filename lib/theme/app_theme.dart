@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
 
 /// Theme configuration for the Movie Star application.
@@ -114,7 +116,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.grey[900],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
@@ -199,7 +201,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.grey[900],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),

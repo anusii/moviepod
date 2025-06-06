@@ -23,12 +23,16 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
+
 import '../models/movie.dart';
 import '../services/favorites_service.dart';
-import '../widgets/sort_controls.dart';
 import '../utils/movie_sort_util.dart';
+import '../widgets/sort_controls.dart';
 import 'movie_details_screen.dart';
 
 /// A screen that displays the user's list of watched movies.
