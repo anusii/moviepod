@@ -26,15 +26,15 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solidpod/solidpod.dart';
 
 import 'package:moviestar/main.dart';
+import 'package:moviestar/screens/settings_screen.dart';
 import 'package:moviestar/services/api_key_service.dart';
 import 'package:moviestar/services/favorites_service.dart';
-import 'package:moviestar/screens/settings_screen.dart';
 
 /// Creates a Solid login widget for authentication.
 ///
@@ -77,9 +77,10 @@ Widget _buildNormalLogin(String serverUrl, SharedPreferences prefs) {
                 required: false,
                 title: 'Movie Star',
                 appDirectory: 'moviestar',
-                webID: serverUrl.isNotEmpty
-                    ? serverUrl
-                    : 'https://pods.dev.solidcommunity.au',
+                webID:
+                    serverUrl.isNotEmpty
+                        ? serverUrl
+                        : 'https://pods.dev.solidcommunity.au',
                 image: const AssetImage('assets/images/app_image.jpg'),
                 logo: const AssetImage('assets/images/app_icon.png'),
                 link:
@@ -88,8 +89,10 @@ Widget _buildNormalLogin(String serverUrl, SharedPreferences prefs) {
                 // Use a wrapper widget to check for API key after login
                 child: ApiKeyCheckWrapper(
                   prefs: prefs,
-                  child:
-                      MyHomePage(title: 'Movie Star Home Page', prefs: prefs),
+                  child: MyHomePage(
+                    title: 'Movie Star Home Page',
+                    prefs: prefs,
+                  ),
                 ),
               ),
             ),
@@ -106,10 +109,10 @@ class ApiKeyCheckWrapper extends StatefulWidget {
   final SharedPreferences prefs;
 
   const ApiKeyCheckWrapper({
-    Key? key,
+    super.key,
     required this.child,
     required this.prefs,
-  }) : super(key: key);
+  });
 
   @override
   State<ApiKeyCheckWrapper> createState() => _ApiKeyCheckWrapperState();
@@ -143,49 +146,53 @@ class _ApiKeyCheckWrapperState extends State<ApiKeyCheckWrapper> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.grey[900],
-          title: const Text(
-            'API Key Required',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'To use MovieStar, you need to set up a MovieDB API key.',
-                style: TextStyle(color: Colors.white),
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: Colors.grey[900],
+              title: const Text(
+                'API Key Required',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 12),
-              Text(
-                'You can get your free API key from The Movie Database (TMDB) website.',
-                style: TextStyle(color: Colors.white70, fontSize: 13),
+              content: const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'To use MovieStar, you need to set up a MovieDB API key.',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'You can get your free API key from The Movie Database (TMDB) website.',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                ],
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(foregroundColor: Colors.grey),
-              child: const Text('Later'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                  child: const Text('Later'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Navigate to settings screen
+                    _navigateToSettings();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Set Up Now'),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // Navigate to settings screen
-                _navigateToSettings();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Set Up Now'),
-            ),
-          ],
-        ),
       );
     }
   }
@@ -200,11 +207,12 @@ class _ApiKeyCheckWrapperState extends State<ApiKeyCheckWrapper> {
     Future.delayed(const Duration(milliseconds: 100), () {
       navigator.push(
         MaterialPageRoute(
-          builder: (context) => SettingsScreen(
-            favoritesService: FavoritesService(widget.prefs),
-            apiKeyService: apiKeyService,
-            fromApiKeyPrompt: true,
-          ),
+          builder:
+              (context) => SettingsScreen(
+                favoritesService: FavoritesService(widget.prefs),
+                apiKeyService: apiKeyService,
+                fromApiKeyPrompt: true,
+              ),
         ),
       );
     });

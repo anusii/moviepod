@@ -23,7 +23,10 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 /// Custom exception for network-related errors.

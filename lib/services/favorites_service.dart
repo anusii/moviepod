@@ -23,14 +23,20 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter/foundation.dart';
+
 import 'package:rxdart/rxdart.dart';
-import '../models/movie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:moviestar/models/movie.dart';
 
 /// A service class that manages the user's movie lists.
 
-class FavoritesService {
+class FavoritesService extends ChangeNotifier {
   /// Key used to store to-watch movies in shared preferences.
 
   static const String _toWatchKey = 'to_watch';
@@ -38,10 +44,6 @@ class FavoritesService {
   /// Key used to store watched movies in shared preferences.
 
   static const String _watchedKey = 'watched';
-
-  /// Key used to store favorites in shared preferences.
-
-  static const String _favoritesKey = 'favorites';
 
   /// Key used to store ratings in shared preferences.
 
@@ -205,9 +207,31 @@ class FavoritesService {
     await _prefs.setString(_ratingsKey, jsonEncode(ratings));
   }
 
+  /// Gets the personal comments for a movie.
+
+  Future<String?> getMovieComments(Movie movie) async {
+    return _prefs.getString('movie_comments_${movie.id}');
+  }
+
+  /// Sets the personal comments for a movie.
+
+  Future<void> setMovieComments(Movie movie, String comments) async {
+    await _prefs.setString('movie_comments_${movie.id}', comments);
+    notifyListeners();
+  }
+
+  /// Removes the personal comments for a movie.
+
+  Future<void> removeMovieComments(Movie movie) async {
+    await _prefs.remove('movie_comments_${movie.id}');
+    notifyListeners();
+  }
+
   /// Disposes the stream controllers.
 
+  @override
   void dispose() {
+    super.dispose();
     _toWatchController.close();
     _watchedController.close();
   }

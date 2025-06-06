@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 /// A utility class for handling TMDB image URLs.
 
 class TmdbImageUtil {
