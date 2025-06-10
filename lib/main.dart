@@ -37,8 +37,8 @@ import 'package:moviestar/screens/home_screen.dart';
 import 'package:moviestar/screens/settings_screen.dart';
 import 'package:moviestar/services/api_key_service.dart';
 import 'package:moviestar/services/favorites_service.dart';
-import 'package:moviestar/services/favorites_service_manager.dart';
 import 'package:moviestar/services/favorites_service_adapter.dart';
+import 'package:moviestar/services/favorites_service_manager.dart';
 import 'package:moviestar/services/movie_service.dart';
 import 'package:moviestar/utils/create_solid_login.dart';
 import 'package:moviestar/utils/initialise_app_folders.dart';
@@ -129,7 +129,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _favoritesServiceManager = FavoritesServiceManager(widget.prefs, context, widget);
+    _favoritesServiceManager = FavoritesServiceManager(
+      widget.prefs,
+      context,
+      widget,
+    );
     _favoritesService = FavoritesServiceAdapter(_favoritesServiceManager);
     _apiKeyService = ApiKeyService(widget.prefs);
     _movieService = MovieService(_apiKeyService);
@@ -211,7 +215,8 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             }
             debugPrint('App folders initialised.');
-            // Now reload POD data since folders are ready
+            // Now reload POD data since folders are ready.
+
             await _favoritesServiceManager.reloadPodDataAfterInit();
           },
         );

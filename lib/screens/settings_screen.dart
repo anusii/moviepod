@@ -116,7 +116,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
 
-    // Show loading indicator
+    // Show loading indicator.
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -141,15 +142,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     try {
       final success = await widget.favoritesServiceManager!.enablePodStorage();
-      
+
       if (success) {
         setState(() => _podStorageEnabled = true);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('POD storage enabled successfully! Your movie lists are now stored in your Solid POD.'),
+              content: Text(
+                'POD storage enabled successfully! Your movie lists are now stored in your Solid POD.',
+              ),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 5),
             ),
@@ -157,12 +160,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       } else {
         setState(() => _podStorageEnabled = false);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Failed to enable POD storage. Please check your Solid POD login and try again.'),
+              content: Text(
+                'Failed to enable POD storage. Please check your Solid POD login and try again.',
+              ),
               backgroundColor: Colors.red,
               duration: Duration(seconds: 5),
             ),
@@ -171,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } catch (e) {
       setState(() => _podStorageEnabled = false);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -193,7 +198,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await widget.favoritesServiceManager!.disablePodStorage();
       setState(() => _podStorageEnabled = false);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -223,7 +228,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       text: widget.apiKeyService.getApiKey(),
     );
 
-    // Initialize POD storage state from service manager
+    // Initialise POD storage state from service manager.
+
     if (widget.favoritesServiceManager != null) {
       _podStorageEnabled = widget.favoritesServiceManager!.isPodStorageEnabled;
     }
