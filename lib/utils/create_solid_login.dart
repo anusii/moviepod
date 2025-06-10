@@ -81,10 +81,6 @@ Widget _buildNormalLogin(String serverUrl, SharedPreferences prefs) {
                     serverUrl.isNotEmpty
                         ? serverUrl
                         : 'https://pods.dev.solidcommunity.au',
-                webID:
-                    serverUrl.isNotEmpty
-                        ? serverUrl
-                        : 'https://pods.dev.solidcommunity.au',
                 image: const AssetImage('assets/images/app_image.png'),
                 logo: const AssetImage('assets/images/app_icon.png'),
                 link:
