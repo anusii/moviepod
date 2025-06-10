@@ -950,10 +950,9 @@ packages:
   solidpod:
     dependency: "direct main"
     description:
-      name: solidpod
-      sha256: "1d3832d56350e854dfda0e0c573879d85ed2f2e1bb74a88cac22e7322d9ffbde"
-      url: "https://pub.dev"
-    source: hosted
+      path: solidpod
+      relative: true
+    source: path
     version: "0.6.6"
   source_span:
     dependency: transitive
