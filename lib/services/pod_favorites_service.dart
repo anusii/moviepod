@@ -14,14 +14,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:solidpod/solidpod.dart'
-    show
-        SolidFunctionCallStatus,
-        getResourcesInContainer,
-        getDirUrl,
-        readPod,
-        writePod,
-        getKeyFromUserIfRequired;
+import 'package:solidpod/solidpod.dart';
 
 import 'package:moviestar/models/movie.dart';
 import 'package:moviestar/services/favorites_service.dart';
@@ -30,11 +23,17 @@ import 'package:moviestar/utils/turtle_serializer.dart';
 
 /// A POD-based service class that manages the user's movie lists in Solid POD.
 class PodFavoritesService extends ChangeNotifier {
-  /// File names for storing data in POD - full paths within the app's data directory.
-  static const String _toWatchFileName = 'moviestar/data/user_lists/to_watch.ttl';
-  static const String _watchedFileName = 'moviestar/data/user_lists/watched.ttl';
-  static const String _ratingsFileName = 'moviestar/data/ratings/ratings.ttl';
-  static const String _commentsFileName = 'moviestar/data/user_lists/comments.ttl';
+  /// File names for storing data in POD - using different paths for read vs write operations.
+  static const String _toWatchFileName = 'user_lists/to_watch.ttl';
+  static const String _watchedFileName = 'user_lists/watched.ttl';
+  static const String _ratingsFileName = 'ratings/ratings.ttl';
+  static const String _commentsFileName = 'user_lists/comments.ttl';
+  
+  // Full paths for reading operations (where files are actually stored)
+  static const String _toWatchFileNameRead = 'moviestar/data/user_lists/to_watch.ttl';
+  static const String _watchedFileNameRead = 'moviestar/data/user_lists/watched.ttl';
+  static const String _ratingsFileNameRead = 'moviestar/data/ratings/ratings.ttl';
+  static const String _commentsFileNameRead = 'moviestar/data/user_lists/comments.ttl';
 
   /// Widget context for POD operations.
   final BuildContext _context;
@@ -130,27 +129,27 @@ class PodFavoritesService extends ChangeNotifier {
       _cachedRatings = {};
       _cachedComments = {};
       
-      // Try to load each file individually, handling missing files gracefully
-      await _loadFileFromPod(_toWatchFileName, (content) {
+      // Try to load each file individually using full read paths, handling missing files gracefully
+      await _loadFileFromPod(_toWatchFileNameRead, (content) {
         if (content is String) {
           _cachedToWatch = TurtleSerializer.moviesFromTurtle(content);
           debugPrint('Loaded ${_cachedToWatch!.length} movies from POD to-watch list');
         }
       });
       
-      await _loadFileFromPod(_watchedFileName, (content) {
+      await _loadFileFromPod(_watchedFileNameRead, (content) {
         if (content is String) {
           _cachedWatched = TurtleSerializer.moviesFromTurtle(content);
         }
       });
       
-      await _loadFileFromPod(_ratingsFileName, (content) {
+      await _loadFileFromPod(_ratingsFileNameRead, (content) {
         if (content is String) {
           _cachedRatings = TurtleSerializer.ratingsFromTurtle(content);
         }
       });
       
-      await _loadFileFromPod(_commentsFileName, (content) {
+      await _loadFileFromPod(_commentsFileNameRead, (content) {
         if (content is String) {
           _cachedComments = TurtleSerializer.commentsFromTurtle(content);
         }
@@ -264,14 +263,14 @@ class PodFavoritesService extends ChangeNotifier {
         await Future.delayed(const Duration(milliseconds: 500));
         debugPrint('POD sync delay completed for to-watch list');
         
-        // Debug: Try to list what's in the moviestar/data/user_lists directory after save
+        // Debug: Try to list what's in the user_lists directory after save
         try {
           debugPrint('Checking POD directory contents after save...');
-          final userListsUrl = await getDirUrl('moviestar/data/user_lists');
+          final userListsUrl = await getDirUrl('user_lists');
           debugPrint('User lists directory URL: $userListsUrl');
           final resources = await getResourcesInContainer(userListsUrl);
-          debugPrint('Files in moviestar/data/user_lists directory: ${resources.files.length}');
-          debugPrint('Subdirs in moviestar/data/user_lists directory: ${resources.subDirs.length}');
+          debugPrint('Files in user_lists directory: ${resources.files.length}');
+          debugPrint('Subdirs in user_lists directory: ${resources.subDirs.length}');
           for (var file in resources.files) {
             debugPrint('  - File: $file');
           }
