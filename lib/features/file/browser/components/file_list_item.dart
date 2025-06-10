@@ -99,7 +99,6 @@ class FileListItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
             child: Container(
               // Apply selection highlighting using theme colours.
-
               decoration: BoxDecoration(
                 color:
                     isSelected
@@ -111,7 +110,6 @@ class FileListItem extends StatelessWidget {
               ),
 
               // Adjust horizontal padding based on available width.
-
               padding: EdgeInsets.symmetric(
                 horizontal: constraints.maxWidth < 50 ? 4 : 12,
                 vertical: 8,
@@ -120,7 +118,6 @@ class FileListItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Show file icon only if width permits.
-
                   if (constraints.maxWidth > 40)
                     const Icon(
                       Icons.insert_drive_file,
@@ -129,19 +126,16 @@ class FileListItem extends StatelessWidget {
                     ),
 
                   // Responsive spacing after icon.
-
                   if (constraints.maxWidth > 40)
                     SizedBox(width: constraints.maxWidth < 100 ? 4 : 12),
 
                   // File information column.
-
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // File name with overflow protection.
-
                         Text(
                           file.name,
                           style: const TextStyle(
@@ -152,7 +146,6 @@ class FileListItem extends StatelessWidget {
                         ),
 
                         // Show modification date if width permits.
-
                         if (constraints.maxWidth > 150)
                           Text(
                             'Modified: ${file.dateModified.toString().split('.')[0]}',
@@ -167,12 +160,10 @@ class FileListItem extends StatelessWidget {
                   ),
 
                   // Action buttons shown only if sufficient width.
-
                   if (showButtons) ...[
                     const SizedBox(width: 8),
 
                     // Preview button for PDF files.
-
                     if (file.name.toLowerCase().contains('.pdf.enc.ttl'))
                       IconButton(
                         visualDensity: VisualDensity.compact,
@@ -245,7 +236,6 @@ class FileListItem extends StatelessWidget {
                       const SizedBox(width: 10),
 
                     // Download button.
-                    
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: const Icon(
@@ -263,7 +253,6 @@ class FileListItem extends StatelessWidget {
                     const SizedBox(width: 10),
 
                     // Delete button.
-                    
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: const Icon(

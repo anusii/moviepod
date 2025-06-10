@@ -23,12 +23,16 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:url_launcher/url_launcher.dart';
-import '../services/favorites_service.dart';
-import '../services/api_key_service.dart';
-import 'to_watch_screen.dart';
-import 'watched_screen.dart';
+
+import 'package:moviestar/screens/to_watch_screen.dart';
+import 'package:moviestar/screens/watched_screen.dart';
+import 'package:moviestar/services/api_key_service.dart';
+import 'package:moviestar/services/favorites_service.dart';
 
 /// A screen that displays and manages user settings.
 
@@ -192,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.2),
+                            color: Colors.red.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text(
@@ -243,6 +247,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       await widget.apiKeyService.setApiKey(
                         _apiKeyController.text,
                       );
+
+                      if (!context.mounted) return;
 
                       if (mounted) {
                         // Show success message.

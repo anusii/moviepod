@@ -23,6 +23,8 @@
 ///
 /// Authors: Kevin Wang
 
+library;
+
 import 'package:intl/intl.dart';
 
 /// A utility class for formatting dates in a consistent and locale-aware manner.
