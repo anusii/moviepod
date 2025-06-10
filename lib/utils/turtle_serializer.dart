@@ -13,18 +13,22 @@ import 'dart:convert';
 import 'package:moviestar/models/movie.dart';
 
 /// Utility class for serializing/deserializing movies to/from Turtle format.
+
 class TurtleSerializer {
   /// Converts a list of movies to TTL format.
+
   static String moviesToTurtle(List<Movie> movies, String listName) {
     final buffer = StringBuffer();
 
-    // Add prefixes
+    // Add prefixes.
+
     buffer.writeln('@prefix : <#> .');
     buffer.writeln('@prefix movie: <http://schema.org/Movie> .');
     buffer.writeln('@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .');
     buffer.writeln();
 
-    // Add list definition
+    // Add list definition.
+
     buffer.writeln(':$listName a :MovieList ;');
     buffer.writeln('  :name "${_escapeString(listName)}" ;');
 
@@ -43,7 +47,8 @@ class TurtleSerializer {
 
     buffer.writeln();
 
-    // Add movie definitions
+    // Add movie definitions.
+
     for (final movie in movies) {
       buffer.writeln(':movie${movie.id} a movie:Movie ;');
       buffer.writeln('  movie:identifier "${movie.id}"^^xsd:integer ;');
@@ -69,6 +74,7 @@ class TurtleSerializer {
   }
 
   /// Converts ratings map to TTL format.
+
   static String ratingsToTurtle(Map<String, double> ratings) {
     final buffer = StringBuffer();
 
@@ -91,6 +97,7 @@ class TurtleSerializer {
   }
 
   /// Converts movie comments to TTL format.
+
   static String commentsToTurtle(Map<String, String> comments) {
     final buffer = StringBuffer();
 
@@ -112,11 +119,13 @@ class TurtleSerializer {
   }
 
   /// Parses movies from TTL content.
-  /// For now, we'll store the JSON data as a simple encoded string in TTL
-  /// This is a simplified approach - in production you'd want proper RDF parsing
+  /// For now, we'll store the JSON data as a simple encoded string in TTL.
+  /// This is a simplified approach - in production you'd want proper RDF parsing.
+
   static List<Movie> moviesFromTurtle(String ttlContent) {
     try {
-      // Look for JSON data comment in TTL
+      // Look for JSON data comment in TTL.
+
       final jsonMatch = RegExp(r'# JSON_DATA: (.+)').firstMatch(ttlContent);
       if (jsonMatch != null) {
         final jsonData = jsonMatch.group(1)!;
@@ -124,7 +133,8 @@ class TurtleSerializer {
         return decoded.map((movie) => Movie.fromJson(movie)).toList();
       }
 
-      // If no JSON data found, return empty list
+      // If no JSON data found, return empty list.
+
       return [];
     } catch (e) {
       return [];
@@ -132,6 +142,7 @@ class TurtleSerializer {
   }
 
   /// Parses ratings from TTL content.
+
   static Map<String, double> ratingsFromTurtle(String ttlContent) {
     try {
       final jsonMatch = RegExp(r'# JSON_DATA: (.+)').firstMatch(ttlContent);
@@ -147,6 +158,7 @@ class TurtleSerializer {
   }
 
   /// Parses comments from TTL content.
+
   static Map<String, String> commentsFromTurtle(String ttlContent) {
     try {
       final jsonMatch = RegExp(r'# JSON_DATA: (.+)').firstMatch(ttlContent);
@@ -162,13 +174,16 @@ class TurtleSerializer {
   }
 
   /// Enhanced serialization with JSON backup for compatibility.
+
   static String moviesToTurtleWithJson(List<Movie> movies, String listName) {
     final buffer = StringBuffer();
 
-    // Add the proper TTL structure
+    // Add the proper TTL structure.
+
     buffer.writeln(moviesToTurtle(movies, listName));
 
-    // Add JSON backup as comment for easy parsing
+    // Add JSON backup as comment for easy parsing.
+
     buffer.writeln(
       '# JSON_DATA: ${jsonEncode(movies.map((m) => m.toJson()).toList())}',
     );
@@ -177,32 +192,39 @@ class TurtleSerializer {
   }
 
   /// Enhanced ratings serialization with JSON backup.
+
   static String ratingsToTurtleWithJson(Map<String, double> ratings) {
     final buffer = StringBuffer();
 
-    // Add proper TTL structure
+    // Add proper TTL structure.
+
     buffer.writeln(ratingsToTurtle(ratings));
 
-    // Add JSON backup as comment
+    // Add JSON backup as comment.
+
     buffer.writeln('# JSON_DATA: ${jsonEncode(ratings)}');
 
     return buffer.toString();
   }
 
   /// Enhanced comments serialization with JSON backup.
+
   static String commentsToTurtleWithJson(Map<String, String> comments) {
     final buffer = StringBuffer();
 
-    // Add proper TTL structure
+    // Add proper TTL structure.
+
     buffer.writeln(commentsToTurtle(comments));
 
-    // Add JSON backup as comment
+    // Add JSON backup as comment.
+
     buffer.writeln('# JSON_DATA: ${jsonEncode(comments)}');
 
     return buffer.toString();
   }
 
   /// Escapes special characters in strings for TTL format.
+
   static String _escapeString(String input) {
     return input
         .replaceAll('\\', '\\\\')
