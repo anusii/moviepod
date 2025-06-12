@@ -108,8 +108,11 @@ class ApiKeyCheckWrapper extends StatefulWidget {
   final Widget child;
   final SharedPreferences prefs;
 
-  const ApiKeyCheckWrapper({Key? key, required this.child, required this.prefs})
-    : super(key: key);
+  const ApiKeyCheckWrapper({
+    super.key,
+    required this.child,
+    required this.prefs,
+  });
 
   @override
   State<ApiKeyCheckWrapper> createState() => _ApiKeyCheckWrapperState();

@@ -26,14 +26,13 @@
 library;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiKeyService extends ChangeNotifier {
   static const String _apiKeySecureKey = 'movie_db_api_key';
   static final FlutterSecureStorage _secureStorage = FlutterSecureStorage(
-    aOptions: const AndroidOptions(encryptedSharedPreferences: true),
+    aOptions: const AndroidOptions(),
     iOptions: const IOSOptions(
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),
