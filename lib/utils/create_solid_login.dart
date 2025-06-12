@@ -121,28 +121,31 @@ class ApiKeyCheckWrapper extends StatefulWidget {
 class _ApiKeyCheckWrapperState extends State<ApiKeyCheckWrapper> {
   late final ApiKeyService _apiKeyService;
   bool _hasCheckedApiKey = false;
-  // Add static flag to prevent showing dialog multiple times in the same session
+  // Add static flag to prevent showing dialog multiple times in the same session.
+
   static bool _hasShownApiKeyDialogThisSession = false;
 
   @override
   void initState() {
     super.initState();
-    _apiKeyService = ApiKeyService(widget.prefs);
-    // Delay the check to ensure the widget is fully built
+    _apiKeyService = ApiKeyService();
+    // Delay the check to ensure the widget is fully built.
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkApiKey();
     });
   }
 
-  void _checkApiKey() {
+  Future<void> _checkApiKey() async {
     if (_hasCheckedApiKey || _hasShownApiKeyDialogThisSession) return;
 
     _hasCheckedApiKey = true;
-    final apiKey = _apiKeyService.getApiKey();
+    final apiKey = await _apiKeyService.getApiKey();
 
-    if (apiKey == null || apiKey.isEmpty) {
+    if (mounted && (apiKey == null || apiKey.isEmpty)) {
       _hasShownApiKeyDialogThisSession = true;
-      // Show dialog asking user to set up API key
+      // Show dialog asking user to set up API key.
+
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -198,12 +201,15 @@ class _ApiKeyCheckWrapperState extends State<ApiKeyCheckWrapper> {
   }
 
   void _navigateToSettings() {
-    // We can't directly access _MyHomePageState as it's private
-    // Instead, navigate to a new SettingsScreen
+    // We can't directly access _MyHomePageState as it's private.
+    // Instead, navigate to a new SettingsScreen.
+
     final navigator = Navigator.of(context);
-    // Get API key service to pass to settings screen
-    final apiKeyService = ApiKeyService(widget.prefs);
-    // Use a delay to ensure the dialog is fully closed
+    // Get API key service to pass to settings screen.
+
+    final apiKeyService = ApiKeyService();
+    // Use a delay to ensure the dialog is fully closed.
+
     Future.delayed(const Duration(milliseconds: 100), () {
       navigator.push(
         MaterialPageRoute(

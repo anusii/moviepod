@@ -27,25 +27,46 @@ library;
 
 import 'package:flutter/foundation.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiKeyService extends ChangeNotifier {
-  static const String _apiKeyPrefsKey = 'movie_db_api_key';
-  final SharedPreferences _prefs;
+  static const String _apiKeySecureKey = 'movie_db_api_key';
+  static final FlutterSecureStorage _secureStorage = FlutterSecureStorage(
+    aOptions: const AndroidOptions(),
+    iOptions: const IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
+    mOptions: const MacOsOptions(groupId: 'com.togaware.moviestar'),
+  );
 
-  ApiKeyService(this._prefs);
+  ApiKeyService();
 
-  String? getApiKey() {
-    return _prefs.getString(_apiKeyPrefsKey);
+  Future<String?> getApiKey() async {
+    try {
+      return await _secureStorage.read(key: _apiKeySecureKey);
+    } catch (e) {
+      debugPrint('Error reading API key from secure storage: $e');
+      return null;
+    }
   }
 
   Future<void> setApiKey(String apiKey) async {
-    await _prefs.setString(_apiKeyPrefsKey, apiKey);
-    notifyListeners();
+    try {
+      await _secureStorage.write(key: _apiKeySecureKey, value: apiKey);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error writing API key to secure storage: $e');
+      rethrow;
+    }
   }
 
   Future<void> clearApiKey() async {
-    await _prefs.remove(_apiKeyPrefsKey);
-    notifyListeners();
+    try {
+      await _secureStorage.delete(key: _apiKeySecureKey);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error deleting API key from secure storage: $e');
+      rethrow;
+    }
   }
 }

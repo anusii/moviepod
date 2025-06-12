@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _favoritesService = FavoritesService(widget.prefs);
-    _apiKeyService = ApiKeyService(widget.prefs);
+    _apiKeyService = ApiKeyService();
     _movieService = MovieService(_apiKeyService);
 
     // Listen for API key changes.

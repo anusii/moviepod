@@ -1,2 +1,5 @@
 #include "../../Flutter/Flutter-Release.xcconfig"
 #include "Warnings.xcconfig"
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+
+CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES

@@ -1,6 +1,8 @@
 PODS:
   - fast_rsa (0.6.0):
     - FlutterMacOS
+  - file_picker (0.0.1):
+    - FlutterMacOS
   - flutter_secure_storage_darwin (10.0.0):
     - Flutter
     - FlutterMacOS
@@ -9,6 +11,8 @@ PODS:
     - FlutterMacOS
   - path_provider_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
+  - printing (1.0.0):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -21,10 +25,12 @@ PODS:
 
 DEPENDENCIES:
   - fast_rsa (from `Flutter/ephemeral/.symlinks/plugins/fast_rsa/macos`)
+  - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - flutter_secure_storage_darwin (from `Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
@@ -32,6 +38,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   fast_rsa:
     :path: Flutter/ephemeral/.symlinks/plugins/fast_rsa/macos
+  file_picker:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   flutter_secure_storage_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_darwin/darwin
   FlutterMacOS:
@@ -40,6 +48,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  printing:
+    :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
   shared_preferences_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sqflite_darwin:
@@ -49,10 +59,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   fast_rsa: 47a50bec1042c8c01726007dc0590a078418f997
+  file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_secure_storage_darwin: 12d2375c690785d97a4e586f15f11be5ae35d5b0
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404

@@ -39,6 +39,22 @@ doc/api/
 # Mac
 .DS_Store
 
+# iOS
+ios/
+ios/.gitignore
+ios/Flutter/
+ios/Flutter/Flutter-Debug.xcconfig
+ios/Flutter/Flutter-Release.xcconfig
+ios/Flutter/Podfile
+ios/Flutter/Podfile.lock
+ios/Runner.xcodeproj/
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcworkspace/
+ios/Runner.xcworkspace/contents.xcworkspacedata
+ios/Runner/
+ios/Runner/DebugProfile.entitlements
+ios/Runner/Release.entitlements
+
 # macOS folder and all its contents
 macos/
 macos/.gitignore
@@ -54,6 +70,10 @@ macos/Runner.xcworkspace/contents.xcworkspacedata
 macos/Runner/
 macos/Runner/DebugProfile.entitlements
 macos/Runner/Release.entitlements
+macos/Podfile.lock
+macos/Runner/Configs/Debug.xcconfig
+macos/Runner/Configs/Release.xcconfig
+macos/Runner/DebugProfile.entitlements
 
 # macOS specific files
 *.mode1v3
