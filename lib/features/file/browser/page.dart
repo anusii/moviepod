@@ -192,7 +192,9 @@ class FileBrowserState extends State<FileBrowser> {
       // Count files in current directory.
 
       currentDirFileCount =
-          resources.files.where((f) => f.endsWith('.enc.ttl')).length;
+          resources.files
+              .where((f) => f.endsWith('.enc.ttl') || f.endsWith('.ttl'))
+              .length;
 
       // Get file counts for all subdirectories.
 

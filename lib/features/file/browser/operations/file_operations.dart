@@ -68,9 +68,11 @@ class FileOperations {
 
     final processedFiles = <FileItem>[];
     for (var fileName in resources.files) {
-      // Skip non-encrypted TTL files.
+      // Skip non-TTL files. Include both .enc.ttl and .ttl files.
 
-      if (!fileName.endsWith('.enc.ttl')) continue;
+      if (!fileName.endsWith('.enc.ttl') && !fileName.endsWith('.ttl')) {
+        continue;
+      }
 
       // Construct full path.
 
@@ -146,7 +148,9 @@ class FileOperations {
 
       final dirUrl = await getDirUrl(dirPath);
       final resources = await getResourcesInContainer(dirUrl);
-      return resources.files.where((f) => f.endsWith('.enc.ttl')).length;
+      return resources.files
+          .where((f) => f.endsWith('.enc.ttl') || f.endsWith('.ttl'))
+          .length;
     } catch (e) {
       // debugPrint('Error counting files in directory: $e');
       return 0;

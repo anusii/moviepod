@@ -33,6 +33,7 @@ import 'package:moviestar/screens/to_watch_screen.dart';
 import 'package:moviestar/screens/watched_screen.dart';
 import 'package:moviestar/services/api_key_service.dart';
 import 'package:moviestar/services/favorites_service.dart';
+import 'package:moviestar/services/favorites_service_manager.dart';
 
 /// A screen that displays and manages user settings.
 
@@ -40,6 +41,7 @@ class SettingsScreen extends StatefulWidget {
   /// Service for managing favorite movies.
 
   final FavoritesService favoritesService;
+  final FavoritesServiceManager? favoritesServiceManager;
   final ApiKeyService apiKeyService;
 
   /// Whether this screen was opened from the API key prompt.
@@ -52,6 +54,7 @@ class SettingsScreen extends StatefulWidget {
     super.key,
     required this.favoritesService,
     required this.apiKeyService,
+    this.favoritesServiceManager,
     this.fromApiKeyPrompt = false,
   });
 
@@ -69,6 +72,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Whether auto-play is enabled.
 
   bool _autoPlayEnabled = true;
+
+  /// Whether POD storage is enabled.
+
+  bool _podStorageEnabled = false;
 
   /// Selected language for the app.
 
@@ -94,12 +101,138 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  /// Enable POD storage and migrate data.
+
+  Future<void> _enablePodStorage() async {
+    if (widget.favoritesServiceManager == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('POD storage manager not available.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
+    // Show loading indicator.
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              SizedBox(width: 16),
+              Text('Enabling POD storage...'),
+            ],
+          ),
+          duration: Duration(seconds: 10),
+        ),
+      );
+    }
+
+    try {
+      final success = await widget.favoritesServiceManager!.enablePodStorage();
+
+      if (success) {
+        setState(() => _podStorageEnabled = true);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'POD storage enabled successfully! Your movie lists are now stored in your Solid POD.',
+              ),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      } else {
+        setState(() => _podStorageEnabled = false);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Failed to enable POD storage. Please check your Solid POD login and try again.',
+              ),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() => _podStorageEnabled = false);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error enabling POD storage: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Disable POD storage and revert to local storage.
+
+  Future<void> _disablePodStorage() async {
+    if (widget.favoritesServiceManager == null) return;
+
+    try {
+      await widget.favoritesServiceManager!.disablePodStorage();
+      setState(() => _podStorageEnabled = false);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('POD storage disabled. Using local storage.'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error disabling POD storage: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _apiKeyController = TextEditingController(
       text: widget.apiKeyService.getApiKey(),
     );
+
+    // Initialise POD storage state from service manager.
+
+    if (widget.favoritesServiceManager != null) {
+      _podStorageEnabled = widget.favoritesServiceManager!.isPodStorageEnabled;
+    }
 
     // If navigated from API key prompt, scroll to the API key section and focus the field.
 
@@ -266,6 +399,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
+            ),
+          ]),
+          _buildSection('Data Storage', [
+            _buildSwitchTile(
+              'Use Solid POD Storage',
+              'Store movie lists in your Solid POD instead of locally',
+              _podStorageEnabled,
+              (value) async {
+                if (value) {
+                  await _enablePodStorage();
+                } else {
+                  await _disablePodStorage();
+                }
+              },
             ),
           ]),
           _buildSection('Preferences', [
