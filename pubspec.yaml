@@ -53,6 +53,7 @@ dependencies:
   syncfusion_flutter_pdf: ^29.2.5
   path: ^1.9.1
   url_launcher: ^6.3.1
+  rdflib: ^0.2.12
 
 dev_dependencies:
   flutter_test:
